@@ -1,4 +1,4 @@
-# ⏳ The Remainder
+# ⏳ VPS Hospice
 
 > **每台 VPS 都有一段余生。**
 > 我们记录它的衰老、预测它的死亡、写下它想说的话。
@@ -19,7 +19,7 @@
 它的硬盘什么时候会坏？
 ```
 
-**The Remainder** 给每台机器一个**剩余寿命倒计时**，和一段**它想说的话**。
+**VPS Hospice** 给每台机器一个**剩余寿命倒计时**，和一段**它想说的话**。
 
 ```
 ┌──────────────────────────────────────────┐
@@ -40,7 +40,7 @@
 
 ## 为什么不一样
 
-| 现有产品 | The Remainder |
+| 现有产品 | VPS Hospice |
 |---|---|
 | 测「当下性能」 | 测「剩余寿命」 |
 | 数据是数字 | 数据是**故事** |
@@ -145,7 +145,7 @@ curl -X POST http://127.0.0.1:8000/api/probe/1
 
 ```bash
 # crontab -e
-0 3 * * * cd /opt/the-remainder && python3 -m scripts.probe_all
+0 3 * * * cd /opt/vps-hospice && python3 -m scripts.probe_all
 ```
 
 ### 4. 接别人的数据
@@ -172,11 +172,11 @@ curl -X POST http://127.0.0.1:8000/api/node/1/sample \
 cp .env.example .env
 
 # LLM（可选，不填用模板模式）
-REMAINDER_LLM_KEY=sk-xxx
-REMAINDER_LLM_MODEL=gpt-4o-mini
+HOSPICE_LLM_KEY=sk-xxx
+HOSPICE_LLM_MODEL=gpt-4o-mini
 
 # 管理密钥
-REMAINDER_SECRET=random-string
+HOSPICE_SECRET=random-string
 ```
 
 ## API
@@ -198,15 +198,15 @@ REMAINDER_SECRET=random-string
 ### Docker
 
 ```bash
-docker build -t the-remainder .
-docker run -d -p 8000:8000 -v $(pwd)/data:/app/data the-remainder
+docker build -t vps-hospice .
+docker run -d -p 8000:8000 -v $(pwd)/data:/app/data vps-hospice
 ```
 
 ### systemd
 
 ```bash
-sudo cp scripts/the-remainder.service /etc/systemd/system/
-sudo systemctl enable --now the-remainder
+sudo cp scripts/vps-hospice.service /etc/systemd/system/
+sudo systemctl enable --now vps-hospice
 ```
 
 ### Nginx 反代
@@ -255,7 +255,7 @@ MIT
 <a name="english"></a>
 ## English
 
-**The Remainder** is a VPS longevity tracker.
+**VPS Hospice** is a VPS longevity tracker.
 
 Everyone benchmarks a server **once**. Nobody tracks it for **three years**.
 

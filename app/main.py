@@ -1,16 +1,16 @@
 """
-The Remainder —— 100 台 VPS 的余生
+VPS Hospice —— 100 台 VPS 的余生
 
 启动：
     python3 -m app.main
     或 uvicorn app.main:app --host 0.0.0.0 --port 8000
 
 环境变量：
-    REMAINDER_DB          SQLite 路径
-    REMAINDER_LLM_KEY     LLM API Key（可选，没有就用模板）
-    REMAINDER_LLM_BASE    API 地址（默认 OpenAI）
-    REMAINDER_LLM_MODEL   模型名
-    REMAINDER_SECRET      管理接口密钥（/api/probe 需要）
+    HOSPICE_DB          SQLite 路径
+    HOSPICE_LLM_KEY     LLM API Key（可选，没有就用模板）
+    HOSPICE_LLM_BASE    API 地址（默认 OpenAI）
+    HOSPICE_LLM_MODEL   模型名
+    HOSPICE_SECRET      管理接口密钥（/api/probe 需要）
 """
 
 from __future__ import annotations
@@ -29,9 +29,9 @@ from fastapi.templating import Jinja2Templates
 from . import db, monologue, survival
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SECRET = os.environ.get("REMAINDER_SECRET", "")
+SECRET = os.environ.get("HOSPICE_SECRET", "")
 
-app = FastAPI(title="The Remainder", version="1.0.0")
+app = FastAPI(title="VPS Hospice", version="1.0.0")
 templates = Jinja2Templates(directory=os.path.join(HERE, "templates"))
 
 

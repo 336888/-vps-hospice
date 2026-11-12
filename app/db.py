@@ -16,7 +16,7 @@ import time
 from contextlib import contextmanager
 from typing import Any, Iterator
 
-DB_PATH = os.environ.get("REMAINDER_DB", os.path.join(os.path.dirname(__file__), "..", "data", "remainder.db"))
+DB_PATH = os.environ.get("HOSPICE_DB", os.path.join(os.path.dirname(__file__), "..", "data", "hospice.db"))
 
 SCHEMA = """
 PRAGMA journal_mode=WAL;

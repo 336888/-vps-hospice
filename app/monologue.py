@@ -10,9 +10,9 @@
   数据指纹 = hash(健康度, 天数, steal, load)
 
 配置（环境变量）：
-  REMAINDER_LLM_BASE   API 地址，默认 https://api.openai.com/v1
-  REMAINDER_LLM_KEY    API Key，留空则用模板模式
-  REMAINDER_LLM_MODEL  模型名，默认 gpt-4o-mini
+  HOSPICE_LLM_BASE   API 地址，默认 https://api.openai.com/v1
+  HOSPICE_LLM_KEY    API Key，留空则用模板模式
+  HOSPICE_LLM_MODEL  模型名，默认 gpt-4o-mini
 """
 
 from __future__ import annotations
@@ -24,9 +24,9 @@ import random
 import urllib.request
 from typing import Any
 
-LLM_BASE = os.environ.get("REMAINDER_LLM_BASE", "https://api.openai.com/v1").rstrip("/")
-LLM_KEY = os.environ.get("REMAINDER_LLM_KEY", "").strip()
-LLM_MODEL = os.environ.get("REMAINDER_LLM_MODEL", "gpt-4o-mini").strip()
+LLM_BASE = os.environ.get("HOSPICE_LLM_BASE", "https://api.openai.com/v1").rstrip("/")
+LLM_KEY = os.environ.get("HOSPICE_LLM_KEY", "").strip()
+LLM_MODEL = os.environ.get("HOSPICE_LLM_MODEL", "gpt-4o-mini").strip()
 
 PROMPT = """你是一台 VPS 服务器。用第一人称写一段独白。
 

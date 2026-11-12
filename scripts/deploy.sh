@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# The Remainder 一键部署（Debian / Ubuntu）
+# VPS Hospice 一键部署（Debian / Ubuntu）
 set -euo pipefail
 
-APP_DIR="${APP_DIR:-/opt/the-remainder}"
+APP_DIR="${APP_DIR:-/opt/vps-hospice}"
 PORT="${PORT:-8000}"
 
 echo "=== 1. 安装依赖 ==="
@@ -25,9 +25,9 @@ echo "=== 4. 生成演示数据 ==="
 python3 -m data.seed || true
 
 echo "=== 5. systemd ==="
-cat > /etc/systemd/system/the-remainder.service << UNIT
+cat > /etc/systemd/system/vps-hospice.service << UNIT
 [Unit]
-Description=The Remainder
+Description=VPS Hospice
 After=network.target
 
 [Service]
@@ -44,11 +44,11 @@ WantedBy=multi-user.target
 UNIT
 
 systemctl daemon-reload
-systemctl enable the-remainder
-systemctl restart the-remainder
+systemctl enable vps-hospice
+systemctl restart vps-hospice
 
 echo "=== 6. nginx ==="
-cat > /etc/nginx/conf.d/remainder.conf << 'NGX'
+cat > /etc/nginx/conf.d/hospice.conf << 'NGX'
 server {
     listen 80;
     server_name _;
@@ -66,4 +66,4 @@ nginx -t && systemctl reload nginx
 echo
 echo "=== 完成 ==="
 echo "本地: http://127.0.0.1:$PORT"
-echo "服务: systemctl status the-remainder"
+echo "服务: systemctl status vps-hospice"

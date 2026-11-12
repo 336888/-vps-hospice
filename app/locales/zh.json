@@ -114,5 +114,8 @@
   "label.today": "今天",
   "label.certified": "已认证",
   "label.price_unit": "年",
-  "unit.month": "月"
+  "unit.month": "月",
+  "section.telemetry": "遥测",
+  "section.signals": "信号",
+  "graveyard.h1": "它们已经不在了。"
 }

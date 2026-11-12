@@ -34,6 +34,18 @@ def _predict(nid):
     return p
 
 
+def _spark(rows, w=100, h=40):
+    vals = [float(r.get("cpu_single") or 0) for r in rows if r.get("cpu_single")]
+    if len(vals) < 2:
+        return None
+    lo, hi = min(vals), max(vals) or 1
+    span = (hi - lo) or 1
+    pts = [(i / (len(vals) - 1) * w, h - (v - lo) / span * (h - 4) - 2)
+           for i, v in enumerate(vals)]
+    line = " ".join(f"{x:.1f},{y:.1f}" for x, y in pts)
+    return {"line": line, "area": f"0,{h} {line} {w},{h}"}
+
+
 def _with_tier(rows):
     for n in rows:
         n["tier"] = survival.tier(float(n.get("hp") or 0), int(n.get("days_left") or 0),
@@ -79,6 +91,7 @@ def node_page(req: Request, nid: int):
     return tpl.TemplateResponse(req, "node.html", _ctx(req, {
         "n": n, "pred": pred, "mono": mono,
         "history": db.node_monologues(nid, 10),
+        "spark": _spark(rows),
         "born": _date(n.get("started_at")),
         "alive_days": max(0, int((time.time() - (n.get("started_at") or 0)) // 86400)),
     }))

@@ -5,168 +5,90 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ t('cert.title') }} — {{ t('app.name') }}</title>
 <link rel="stylesheet" href="/static/base.css">
-<style>
-.doc { padding: 56px 18px 40px; border-bottom: 1px solid var(--hair); }
-.doc .kicker {
-  font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase;
-  font-weight: 700; color: var(--muted); margin-bottom: 26px;
-}
-.doc h1 {
-  font-family: var(--serif); font-weight: 400;
-  font-size: clamp(40px, 8vw, 96px); line-height: 0.88; letter-spacing: -0.035em;
-  margin-bottom: 26px;
-}
-.doc h1 em { font-style: italic; }
-.doc p {
-  max-width: 56ch; font-size: 13px; line-height: 1.72; color: var(--muted);
-}
-.doc p b { color: var(--ink); font-weight: 600; }
-
-.tiers { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--hair); }
-.tier { padding: 28px 20px 30px; border-right: 1px solid var(--hair); }
-.tier:last-child { border-right: none; }
-.tier .lvl {
-  font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
-  font-weight: 800; margin-bottom: 20px;
-}
-.tier .price {
-  font-family: var(--serif); font-size: 42px; line-height: 1; letter-spacing: -0.02em;
-  margin-bottom: 4px; font-variant-numeric: lining-nums tabular-nums;
-}
-.tier .per {
-  font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--muted); font-weight: 600; margin-bottom: 24px;
-}
-.tier .req { border-top: 1px solid var(--hair); padding-top: 16px; }
-.tier .req div {
-  display: flex; justify-content: space-between; padding: 7px 0;
-  font-size: 10.5px; letter-spacing: 0.06em;
-}
-.tier .req div span:first-child { color: var(--muted); }
-.tier .req div span:last-child { font-family: var(--mono); font-weight: 600; }
-
-.items { border-bottom: 1px solid var(--hair); }
-.item2 {
-  display: grid; grid-template-columns: 220px 1fr;
-  border-bottom: 1px solid var(--hair);
-  transition: background .16s, color .16s;
-}
-.item2:last-child { border-bottom: none; }
-.item2:hover { background: var(--ink); color: var(--paper); }
-.item2:hover .d { color: var(--paper); opacity: .7; }
-.item2 > div { padding: 17px 18px; }
-.item2 .k { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
-.item2 .d { font-size: 12px; color: var(--muted); line-height: 1.65; }
-
-.embed { padding: 0; border-bottom: 1px solid var(--hair); }
-.embed .sample {
-  padding: 34px 18px; border-bottom: 1px solid var(--hair);
-  display: flex; flex-direction: column; gap: 18px; align-items: flex-start;
-  background: #FFFFFF;
-}
-.embed .sample img { display: block; }
-.embed pre {
-  margin: 0; padding: 20px 18px; border-bottom: 1px solid var(--hair);
-  font-family: var(--mono); font-size: 11px; line-height: 1.85;
-  color: var(--muted); overflow-x: auto; white-space: pre;
-}
-
-.cta { padding: 46px 18px; border-bottom: 1px solid var(--hair); }
-.cta h2 { font-family: var(--serif); font-size: 27px; font-weight: 400; margin-bottom: 14px; letter-spacing: -0.015em; }
-.cta p { font-size: 12.5px; color: var(--muted); max-width: 52ch; line-height: 1.7; margin-bottom: 24px; }
-.cta a.btn {
-  display: inline-block; padding: 13px 30px;
-  border: 1px solid var(--hair); background: var(--ink); color: var(--paper);
-  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700;
-  transition: background .16s, color .16s;
-}
-.cta a.btn:hover { background: var(--paper); color: var(--ink); }
-
-@media (max-width: 860px) {
-  .tiers { grid-template-columns: 1fr; }
-  .tier { border-right: none; border-bottom: 1px solid var(--hair); }
-  .item2 { grid-template-columns: 1fr; }
-  .item2 .k { padding-bottom: 0; }
-  .item2 .d { padding-top: 4px; }
-}
-@media (max-width: 560px) {
-  .doc { padding: 38px 14px 28px; }
-  .tier { padding: 22px 14px; }
-  .item2 > div { padding: 14px; }
-}
-</style>
 </head>
 <body>
 <div class="shell">
 
   <div class="bar">
-    <span class="mark">{{ t('app.name') }}</span>
+    <span class="mark"><i></i>{{ t('app.name') }}</span>
     <nav>
       <a href="/">{{ t('nav.arena') }}</a>
       <a href="/certify" class="on">{{ t('nav.certify') }}</a>
+      <a href="/graveyard">{{ t('nav.graveyard') }}</a>
       <a href="/lang/{{ 'zh' if lang == 'en' else 'en' }}">{{ '中文' if lang == 'en' else 'EN' }}</a>
     </nav>
   </div>
 
-  <div class="doc">
+  <div class="hero">
     <div class="kicker">{{ t('cert.kicker') }}</div>
-    <h1>{{ t('cert.h1a') }}<br><em>{{ t('cert.h1b') }}</em></h1>
+    <h1>{{ t('cert.h1a') }} <em>{{ t('cert.h1b') }}</em></h1>
     <p>{{ t('cert.lead') }}</p>
   </div>
 
-  <div class="tiers">
-    <div class="tier">
-      <div class="lvl">Platinum</div>
-      <div class="price">$200</div>
-      <div class="per">{{ t('cert.per_quarter') }}</div>
-      <div class="req">
-        <div><span>{{ t('cert.req.health') }}</span><span>≥ 88</span></div>
-        <div><span>{{ t('cert.req.days') }}</span><span>≥ 1500</span></div>
-        <div><span>{{ t('cert.req.oversell') }}</span><span>≤ 0.25</span></div>
+  <div class="beam">
+    <svg viewBox="0 0 1200 46" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="rail2" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="rgba(255,255,255,.02)"/>
+          <stop offset=".15" stop-color="rgba(255,255,255,.09)"/>
+          <stop offset=".85" stop-color="rgba(255,255,255,.09)"/>
+          <stop offset="1" stop-color="rgba(255,255,255,.02)"/>
+        </linearGradient>
+      </defs>
+      <line x1="0" y1="23" x2="1200" y2="23" stroke="url(#rail2)" stroke-width="1"/>
+      <circle class="node-dot" cx="0" cy="23" r="2.5"/>
+      <circle class="node-live" cx="1200" cy="23" r="2.5"/>
+      <line class="glow" x1="0" y1="23" x2="0" y2="23" stroke-dasharray="90 1110">
+        <animate attributeName="stroke-dashoffset" from="1200" to="0" dur="4.2s" repeatCount="indefinite"/>
+      </line>
+    </svg>
+  </div>
+
+  <div class="grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:52px">
+    <div class="card platinum">
+      <div class="top"><span class="tier">PLATINUM</span><span class="led"></span></div>
+      <div class="big">$200</div>
+      <div class="place">{{ t('cert.per_quarter') }}</div>
+      <div style="border-top:1px solid var(--line);margin-top:14px;padding-top:12px">
+        <div class="rowline" style="grid-template-columns:1fr auto;border:none"><div class="k">{{ t('cert.req.health') }}</div><div class="v" style="font-size:12px">&ge; 88</div></div>
+        <div class="rowline" style="grid-template-columns:1fr auto;border:none"><div class="k">{{ t('cert.req.days') }}</div><div class="v" style="font-size:12px">&ge; 1500</div></div>
+        <div class="rowline" style="grid-template-columns:1fr auto;border:none"><div class="k">{{ t('cert.req.oversell') }}</div><div class="v" style="font-size:12px">&le; 0.25</div></div>
       </div>
     </div>
-    <div class="tier">
-      <div class="lvl">Gold</div>
-      <div class="price">$120</div>
-      <div class="per">{{ t('cert.per_quarter') }}</div>
-      <div class="req">
-        <div><span>{{ t('cert.req.health') }}</span><span>≥ 75</span></div>
-        <div><span>{{ t('cert.req.days') }}</span><span>≥ 900</span></div>
-        <div><span>{{ t('cert.req.oversell') }}</span><span>≤ 0.40</span></div>
+    <div class="card gold">
+      <div class="top"><span class="tier">GOLD</span><span class="led"></span></div>
+      <div class="big">$120</div>
+      <div class="place">{{ t('cert.per_quarter') }}</div>
+      <div style="border-top:1px solid var(--line);margin-top:14px;padding-top:12px">
+        <div class="rowline" style="grid-template-columns:1fr auto;border:none"><div class="k">{{ t('cert.req.health') }}</div><div class="v" style="font-size:12px">&ge; 75</div></div>
+        <div class="rowline" style="grid-template-columns:1fr auto;border:none"><div class="k">{{ t('cert.req.days') }}</div><div class="v" style="font-size:12px">&ge; 900</div></div>
+        <div class="rowline" style="grid-template-columns:1fr auto;border:none"><div class="k">{{ t('cert.req.oversell') }}</div><div class="v" style="font-size:12px">&le; 0.40</div></div>
       </div>
     </div>
-    <div class="tier">
-      <div class="lvl">Silver</div>
-      <div class="price">$50</div>
-      <div class="per">{{ t('cert.per_quarter') }}</div>
-      <div class="req">
-        <div><span>{{ t('cert.req.health') }}</span><span>≥ 60</span></div>
-        <div><span>{{ t('cert.req.days') }}</span><span>≥ 400</span></div>
-        <div><span>{{ t('cert.req.oversell') }}</span><span>≤ 0.60</span></div>
+    <div class="card silver">
+      <div class="top"><span class="tier">SILVER</span><span class="led"></span></div>
+      <div class="big">$50</div>
+      <div class="place">{{ t('cert.per_quarter') }}</div>
+      <div style="border-top:1px solid var(--line);margin-top:14px;padding-top:12px">
+        <div class="rowline" style="grid-template-columns:1fr auto;border:none"><div class="k">{{ t('cert.req.health') }}</div><div class="v" style="font-size:12px">&ge; 60</div></div>
+        <div class="rowline" style="grid-template-columns:1fr auto;border:none"><div class="k">{{ t('cert.req.days') }}</div><div class="v" style="font-size:12px">&ge; 400</div></div>
+        <div class="rowline" style="grid-template-columns:1fr auto;border:none"><div class="k">{{ t('cert.req.oversell') }}</div><div class="v" style="font-size:12px">&le; 0.60</div></div>
       </div>
     </div>
   </div>
 
-  <div class="head">
-    <h2>{{ t('cert.what.title') }}</h2>
-    <span class="meta">05</span>
+  <div class="head"><h2>{{ t('cert.what.title') }}</h2><span class="meta">05</span></div>
+  <div style="margin-bottom:48px">
+    <div class="rowline" style="grid-template-columns:220px 1fr"><div class="k">{{ t('cert.what.badge') }}</div><div style="color:#A1A1AA;font-size:12px">{{ t('cert.what.badge.d') }}</div></div>
+    <div class="rowline" style="grid-template-columns:220px 1fr"><div class="k">{{ t('cert.what.home') }}</div><div style="color:#A1A1AA;font-size:12px">{{ t('cert.what.home.d') }}</div></div>
+    <div class="rowline" style="grid-template-columns:220px 1fr"><div class="k">{{ t('cert.what.link') }}</div><div style="color:#A1A1AA;font-size:12px">{{ t('cert.what.link.d') }}</div></div>
+    <div class="rowline" style="grid-template-columns:220px 1fr"><div class="k">{{ t('cert.what.data') }}</div><div style="color:#A1A1AA;font-size:12px">{{ t('cert.what.data.d') }}</div></div>
+    <div class="rowline" style="grid-template-columns:220px 1fr"><div class="k">{{ t('cert.what.promise') }}</div><div style="color:#A1A1AA;font-size:12px">{{ t('cert.what.promise.d') }}</div></div>
   </div>
 
-  <div class="items">
-    <div class="item2"><div class="k">{{ t('cert.what.badge') }}</div><div class="d">{{ t('cert.what.badge.d') }}</div></div>
-    <div class="item2"><div class="k">{{ t('cert.what.home') }}</div><div class="d">{{ t('cert.what.home.d') }}</div></div>
-    <div class="item2"><div class="k">{{ t('cert.what.link') }}</div><div class="d">{{ t('cert.what.link.d') }}</div></div>
-    <div class="item2"><div class="k">{{ t('cert.what.data') }}</div><div class="d">{{ t('cert.what.data.d') }}</div></div>
-    <div class="item2"><div class="k">{{ t('cert.what.promise') }}</div><div class="d">{{ t('cert.what.promise.d') }}</div></div>
-  </div>
-
-  <div class="head">
-    <h2>{{ t('cert.embed.title') }}</h2>
-    <span class="meta">SVG</span>
-  </div>
-
-  <div class="embed">
-    <div class="sample">
+  <div class="head"><h2>{{ t('cert.embed.title') }}</h2><span class="meta">SVG</span></div>
+  <div class="card" style="margin-bottom:48px;cursor:default;padding:26px 24px">
+    <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:20px">
       {% if rows %}
       <img src="/card/{{ rows[0].id }}.svg" alt="" height="96">
       <img src="/badge/{{ rows[0].id }}.svg" alt="" height="20">
@@ -174,35 +96,34 @@
       <img src="/badge/1.svg" alt="" height="20">
       {% endif %}
     </div>
-    <pre>&lt;a href="https://{{ t('cert.domain') }}/go/ID"&gt;
+    <div style="font-family:var(--mono);font-size:11px;line-height:1.9;color:var(--mute);white-space:pre;overflow-x:auto">&lt;a href="https://{{ t('cert.domain') }}/go/ID"&gt;
   &lt;img src="https://{{ t('cert.domain') }}/badge/ID.svg" alt=""&gt;
-&lt;/a&gt;</pre>
+&lt;/a&gt;</div>
   </div>
 
   {% if rows %}
-  <div class="head">
-    <h2>{{ t('cert.current') }}</h2>
-    <span class="meta">{{ rows|length }}</span>
-  </div>
-  <div class="list">
+  <div class="head"><h2>{{ t('cert.current') }}</h2><span class="meta">{{ rows|length }}</span></div>
+  <div class="grid" style="margin-bottom:48px">
     {% for n in rows %}
-    <div class="row" onclick="location.href='/node/{{ n.id }}'">
-      <div class="idx">{{ '%02d'|format(n.id) }}</div>
-      <div class="who">{{ n.provider }}<span class="dim">{{ n.location }}</span></div>
-      <div class="days">{{ n.days_left or 0 }}<small>{{ t('unit.days') }}</small></div>
-      <div class="tier">{{ (n.tier or '-')|upper }}</div>
-      <div class="go" style="justify-self:end;margin-right:14px;font-family:var(--mono);font-size:10px">
-        {{ n.clicks or 0 }}
-      </div>
+    {% set tier = n.tier or 'silver' %}
+    <div class="card {{ tier }}" onclick="location.href='/node/{{ n.id }}'">
+      <div class="top"><span class="tier">{{ tier|upper }}</span><span class="led"></span></div>
+      <div class="name">{{ n.provider }}</div>
+      <div class="place">{{ n.location }}</div>
+      <div class="big">{{ n.days_left or 0 }}<em>{{ t('unit.days') }}</em></div>
+      <div class="sub">{{ n.clicks or 0 }} clicks</div>
     </div>
     {% endfor %}
   </div>
   {% endif %}
 
-  <div class="cta">
-    <h2>{{ t('cert.cta.title') }}</h2>
-    <p>{{ t('cert.cta.sub') }}</p>
-    <a class="btn" href="mailto:{{ t('cert.email') }}?subject=Certification">{{ t('cert.cta.btn') }}</a>
+  <div style="padding:20px 0 40px">
+    <h2 style="font-size:19px;font-weight:600;letter-spacing:-.02em;margin-bottom:12px">{{ t('cert.cta.title') }}</h2>
+    <p style="font-size:12.5px;color:var(--dim);max-width:52ch;line-height:1.7;margin-bottom:22px">{{ t('cert.cta.sub') }}</p>
+    <a href="mailto:{{ t('cert.email') }}?subject=Certification"
+       style="display:inline-block;padding:11px 26px;border-radius:8px;background:rgba(0,229,255,.1);
+              border:1px solid rgba(0,229,255,.28);color:var(--cyan);
+              font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:600">{{ t('cert.cta.btn') }}</a>
   </div>
 
   <div class="foot">
@@ -211,5 +132,20 @@
   </div>
 
 </div>
+<script>
+(function () {
+  var raf = null;
+  document.addEventListener('mousemove', function (e) {
+    var card = e.target.closest && e.target.closest('.card');
+    if (!card || raf) return;
+    raf = requestAnimationFrame(function () {
+      var r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      raf = null;
+    });
+  }, { passive: true });
+})();
+</script>
 </body>
 </html>

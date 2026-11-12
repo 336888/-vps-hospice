@@ -5,52 +5,44 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ t('compare.title') }} — {{ t('app.name') }}</title>
 <link rel="stylesheet" href="/static/base.css">
-<style>
-.doc { padding: 56px 18px 34px; border-bottom: 1px solid var(--hair); }
-.doc h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(38px, 7vw, 76px); line-height: .9; letter-spacing: -.03em; }
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: 16px 14px; border-bottom: 1px solid var(--hair); text-align: left; vertical-align: top; }
-th { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); font-weight: 700; border-bottom: 1px solid var(--hair); }
-td.k { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); font-weight: 700; width: 150px; }
-td.v { font-family: var(--serif); font-size: 21px; letter-spacing: -.015em; font-variant-numeric: lining-nums tabular-nums; }
-tr:hover td { background: var(--ink); color: var(--paper); }
-tr:hover td.k { color: var(--paper); opacity: .6; }
-td .buy { display: inline-block; padding: 8px 16px; border: 1px solid currentColor; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; font-weight: 700; }
-</style>
 </head>
 <body>
 <div class="shell">
   <div class="bar">
-    <span class="mark">{{ t('app.name') }}</span>
+    <span class="mark"><i></i>{{ t('app.name') }}</span>
     <nav>
       <a href="/">{{ t('nav.arena') }}</a>
       <a href="/certify">{{ t('nav.certify') }}</a>
+      <a href="/graveyard">{{ t('nav.graveyard') }}</a>
       <a href="/lang/{{ 'zh' if lang == 'en' else 'en' }}">{{ '中文' if lang == 'en' else 'EN' }}</a>
     </nav>
   </div>
 
-  <div class="doc"><h1>{{ t('compare.title') }}</h1></div>
+  <div class="hero">
+    <div class="kicker">Side by side</div>
+    <h1>{{ t('compare.title') }}</h1>
+  </div>
 
   {% if rows %}
-  <table>
+  <table class="tbl" style="margin-bottom:44px">
     <thead>
       <tr>
         <th></th>
-        {% for n in rows %}<th>{{ n.provider }}<br><span style="font-weight:400;text-transform:none;letter-spacing:.04em">{{ n.location }}</span></th>{% endfor %}
+        {% for n in rows %}<th>{{ n.provider }} &middot; {{ n.location }}</th>{% endfor %}
       </tr>
     </thead>
     <tbody>
-      <tr><td class="k">{{ t('label.plan') }}</td>{% for n in rows %}<td>{{ n.plan or '-' }}</td>{% endfor %}</tr>
+      <tr><td class="k">{{ t('label.plan') }}</td>{% for n in rows %}<td class="v">{{ n.plan or '-' }}</td>{% endfor %}</tr>
       <tr><td class="k">{{ t('label.price') }}</td>{% for n in rows %}<td class="v">${{ '%.0f'|format(n.price or 0) }}</td>{% endfor %}</tr>
-      <tr><td class="k">{{ t('status.remaining') }}</td>{% for n in rows %}<td class="v">{{ n.days_left or 0 }}</td>{% endfor %}</tr>
+      <tr><td class="k">{{ t('status.remaining') }}</td>{% for n in rows %}<td class="v" style="color:var(--cyan)">{{ n.days_left or 0 }}</td>{% endfor %}</tr>
       <tr><td class="k">{{ t('label.health') }}</td>{% for n in rows %}<td class="v">{{ '%.0f'|format(n.hp or 0) }}</td>{% endfor %}</tr>
       <tr><td class="k">{{ t('label.oversell') }}</td>{% for n in rows %}<td class="v">{{ '%.2f'|format(n.oversell or 0) }}</td>{% endfor %}</tr>
       <tr><td class="k">{{ t('label.mining') }}</td>{% for n in rows %}<td class="v">{{ '%.0f'|format((n.mining_risk or 0) * 100) }}%</td>{% endfor %}</tr>
-      <tr><td class="k">Tier</td>{% for n in rows %}<td>{{ (n.tier or '-')|upper }}</td>{% endfor %}</tr>
+      <tr><td class="k">Tier</td>{% for n in rows %}<td class="v" style="color:var(--amber)">{{ (n.tier or '-')|upper }}</td>{% endfor %}</tr>
       <tr>
         <td class="k"></td>
         {% for n in rows %}
-        <td>{% if n.affiliate %}<a class="buy" href="/go/{{ n.id }}">{{ t('cert.buy') }}</a>{% else %}—{% endif %}</td>
+        <td>{% if n.affiliate %}<a href="/go/{{ n.id }}" style="display:inline-block;padding:7px 15px;border-radius:7px;background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.24);color:var(--cyan);font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase">{{ t('cert.buy') }}</a>{% else %}<span style="color:var(--mute)">—</span>{% endif %}</td>
         {% endfor %}
       </tr>
     </tbody>

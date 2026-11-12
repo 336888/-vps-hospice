@@ -5,25 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ t('graveyard.title') }} — {{ t('app.name') }}</title>
 <link rel="stylesheet" href="/static/base.css">
-<style>
-.doc { padding: 56px 18px 34px; border-bottom: 1px solid var(--hair); }
-.doc h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(42px, 8vw, 92px); line-height: .88; letter-spacing: -.035em; }
-.doc .sub { margin-top: 22px; border-top: 1px solid var(--hair); padding-top: 14px; font-size: 12px; color: var(--muted); max-width: 46ch; }
-.tomb { border-bottom: 1px solid var(--hair); padding: 26px 18px 30px; transition: background .16s, color .16s; }
-.tomb:hover { background: var(--ink); color: var(--paper); }
-.tomb:hover .meta, .tomb:hover .ep { color: var(--paper); opacity: .7; }
-.tomb .top { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
-.tomb .id { font-family: var(--mono); font-size: 10px; color: var(--muted); }
-.tomb .name { font-family: var(--serif); font-size: 30px; letter-spacing: -.02em; }
-.tomb .loc { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
-.tomb .meta { font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-left: auto; }
-.tomb .ep { font-family: var(--serif); font-style: italic; font-size: 17px; line-height: 1.55; color: var(--ink); max-width: 50ch; padding-left: 18px; border-left: 1px solid currentColor; }
-</style>
 </head>
 <body>
 <div class="shell">
   <div class="bar">
-    <span class="mark">{{ t('app.name') }}</span>
+    <span class="mark"><i></i>{{ t('app.name') }}</span>
     <nav>
       <a href="/">{{ t('nav.arena') }}</a>
       <a href="/certify">{{ t('nav.certify') }}</a>
@@ -32,23 +18,32 @@
     </nav>
   </div>
 
-  <div class="doc">
-    <h1>{{ t('graveyard.title') }}</h1>
-    <div class="sub">{{ t('graveyard.sub') }}</div>
+  <div class="hero">
+    <div class="kicker">{{ t('graveyard.title') }}</div>
+    <h1>{{ t('graveyard.h1') }}</h1>
+    <p>{{ t('graveyard.sub') }}</p>
   </div>
 
   {% if dead %}
+  <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(320px,1fr))">
     {% for d in dead %}
-    <div class="tomb">
+    <div class="card dead">
       <div class="top">
-        <span class="id">№ {{ '%03d'|format(d.id) }}</span>
-        <span class="name">{{ d.provider }}</span>
-        <span class="loc">{{ d.location }}</span>
-        <span class="meta">{{ d.born_fmt }} — {{ d.died_fmt }} · {{ d.lived_days }} {{ t('unit.days') }}</span>
+        <span class="tier">NODE {{ '%03d'|format(d.id) }}</span>
+        <span class="led"></span>
       </div>
-      <div class="ep">{{ d.epitaph or t('empty.no_epitaph') }}</div>
+      <div class="name">{{ d.provider }}</div>
+      <div class="place">{{ d.location }}</div>
+      <div class="sub" style="margin-top:12px;margin-bottom:12px">
+        {{ d.born_fmt }} &rarr; {{ d.died_fmt }}<br>
+        {{ d.lived_days }} {{ t('unit.days') }} &middot; {{ d.probes }} {{ t('graveyard.probes') }}
+      </div>
+      <div style="font-size:12.5px;line-height:1.65;color:#71717A;font-style:italic;border-left:1px solid rgba(255,255,255,.1);padding-left:12px">
+        {{ d.epitaph or t('empty.no_epitaph') }}
+      </div>
     </div>
     {% endfor %}
+  </div>
   {% else %}
   <div class="empty">{{ t('empty.graveyard') }}</div>
   {% endif %}
@@ -58,5 +53,20 @@
     <span>{{ t('footer.rights') }}</span>
   </div>
 </div>
+<script>
+(function () {
+  var raf = null;
+  document.addEventListener('mousemove', function (e) {
+    var card = e.target.closest && e.target.closest('.card');
+    if (!card || raf) return;
+    raf = requestAnimationFrame(function () {
+      var r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      raf = null;
+    });
+  }, { passive: true });
+})();
+</script>
 </body>
 </html>

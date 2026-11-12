@@ -10,7 +10,7 @@
 <div class="shell">
 
   <div class="bar">
-    <span class="mark">{{ t('app.name') }}</span>
+    <span class="mark"><i></i>{{ t('app.name') }}</span>
     <nav>
       <a href="/" class="on">{{ t('nav.arena') }}</a>
       <a href="/certify">{{ t('nav.certify') }}</a>
@@ -21,45 +21,74 @@
 
   <div class="hero">
     <div class="kicker">{{ t('hero.kicker') }}</div>
-    <h1>{{ t('hero.line1') }}<br>{{ t('hero.line2') }}<br><em>{{ t('hero.line3') }}</em></h1>
-    <div class="sub">{{ t('hero.sub') }}</div>
+    <h1>{{ t('hero.line1') }} {{ t('hero.line2') }} <em>{{ t('hero.line3') }}</em></h1>
+    <p>{{ t('hero.sub') }}</p>
   </div>
 
   <div class="figures">
-    <div class="figure">
-      <div class="num">{{ stats.alive }}</div>
-      <div class="lbl">{{ t('stat.alive') }}</div>
+    <div class="fig live">
+      <div class="n">{{ stats.alive }}</div>
+      <div class="k">{{ t('stat.alive') }}</div>
     </div>
-    <div class="figure">
-      <div class="num">{{ stats.dead }}</div>
-      <div class="lbl">{{ t('stat.dead') }}</div>
+    <div class="fig">
+      <div class="n">{{ stats.dead }}</div>
+      <div class="k">{{ t('stat.dead') }}</div>
     </div>
-    <div class="figure">
-      <div class="num">{{ stats.samples }}</div>
-      <div class="lbl">{{ t('stat.samples') }}</div>
+    <div class="fig">
+      <div class="n">{{ stats.samples }}</div>
+      <div class="k">{{ t('stat.samples') }}</div>
     </div>
-    <div class="figure">
-      <div class="num">{{ stats.avg_days_left }}</div>
-      <div class="lbl">{{ t('stat.avg_days') }}</div>
+    <div class="fig">
+      <div class="n">{{ stats.avg_days_left }}</div>
+      <div class="k">{{ t('stat.avg_days') }}</div>
     </div>
+  </div>
+
+
+  <div class="beam">
+    <svg viewBox="0 0 1200 46" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="rail" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="rgba(255,255,255,.02)"/>
+          <stop offset=".15" stop-color="rgba(255,255,255,.09)"/>
+          <stop offset=".85" stop-color="rgba(255,255,255,.09)"/>
+          <stop offset="1" stop-color="rgba(255,255,255,.02)"/>
+        </linearGradient>
+      </defs>
+      <line x1="0" y1="23" x2="1200" y2="23" stroke="url(#rail)" stroke-width="1"/>
+      <circle class="node-dot" cx="0" cy="23" r="2.5"/>
+      <circle class="node-live" cx="1200" cy="23" r="2.5"/>
+      <line class="glow" x1="0" y1="23" x2="0" y2="23"
+            stroke-dasharray="90 1110"
+            transform="translate(0,0)">
+        <animate attributeName="stroke-dashoffset" from="1200" to="0"
+                 dur="4.2s" repeatCount="indefinite"/>
+      </line>
+    </svg>
   </div>
 
   {% if certified %}
   <div class="head">
     <h2>{{ t('section.certified') }}</h2>
-    <span class="meta"><a href="/certify">{{ t('cert.apply') }} →</a></span>
+    <span class="meta">{{ certified|length }} &middot; <a href="/certify">{{ t('cert.apply') }}</a></span>
   </div>
-
-  <div class="list">
+  <div class="grid">
     {% for n in certified %}
-    <div class="row" onclick="location.href='/node/{{ n.id }}'">
-      <div class="idx">{{ '%02d'|format(n.id) }}</div>
-      <div class="who">{{ n.provider }}<span class="dim">{{ n.location }}</span></div>
-      <div class="days">{{ n.days_left or 0 }}<small>{{ t('unit.days') }}</small></div>
-      <div class="tier">{{ (n.tier or '-')|upper }}</div>
-      <a class="go" href="{{ '/go/' + n.id|string if n.affiliate else '/node/' + n.id|string }}">
-        {{ t('cert.buy') if n.affiliate else t('cert.details') }}
-      </a>
+    {% set tier = n.tier or 'silver' %}
+    <div class="card {{ tier }}" onclick="location.href='/node/{{ n.id }}'">
+      <div class="top">
+        <span class="tier">{{ tier|upper }}</span>
+        <span class="led"></span>
+      </div>
+      <div class="name">{{ n.provider }}</div>
+      <div class="place">{{ n.location }}</div>
+      <div class="big">{{ n.days_left or 0 }}<em>{{ t('unit.days') }}</em></div>
+      <div class="sub">{{ '%.0f'|format(n.hp or 0) }}/100 &middot; OS {{ '%.2f'|format(n.oversell or 0) }}</div>
+      <div class="track"><i style="width:{{ ((n.days_left or 0) / 36.5) if (n.days_left or 0) < 3650 else 100 }}%"></i></div>
+      <div class="acts">
+        {% if n.affiliate %}<a class="buy" href="/go/{{ n.id }}">{{ t('cert.buy') }}</a>{% endif %}
+        <a class="info" href="/node/{{ n.id }}">{{ t('cert.details') }}</a>
+      </div>
     </div>
     {% endfor %}
   </div>
@@ -71,22 +100,27 @@
   </div>
 
   {% if alive %}
-  <div class="list">
+  <div class="grid">
     {% for n in alive %}
-    <div class="row" onclick="location.href='/node/{{ n.id }}'">
-      <div class="idx">{{ '%02d'|format(n.id) }}</div>
-      <div class="who">{{ n.provider }}<span class="dim">{{ n.location }} · {{ n.plan or '-' }}</span></div>
-      <div class="days">{{ n.days_left or 0 }}<small>{{ t('unit.days') }}</small></div>
-      <div class="tier">{{ '%.0f'|format(n.hp or 0) }}/100</div>
-      <a class="go" href="/node/{{ n.id }}">{{ t('cert.details') }}</a>
+    {% set d = n.days_left or 0 %}
+    <div class="card {{ 'warn' if d < 400 else '' }}" onclick="location.href='/node/{{ n.id }}'">
+      <div class="top">
+        <span class="tier">{{ n.plan or '-' }}</span>
+        <span class="led"></span>
+      </div>
+      <div class="name">{{ n.provider }}</div>
+      <div class="place">{{ n.location }}</div>
+      <div class="big">{{ d }}<em>{{ t('unit.days') }}</em></div>
+      <div class="sub">{{ '%.0f'|format(n.hp or 0) }}/100 &middot; OS {{ '%.2f'|format(n.oversell or 0) }}</div>
+      <div class="track"><i style="width:{{ (d / 36.5) if d < 3650 else 100 }}%"></i></div>
+      <div class="acts">
+        <a class="info" href="/node/{{ n.id }}">{{ t('cert.details') }}</a>
+      </div>
     </div>
     {% endfor %}
   </div>
   {% else %}
-  <div class="empty">
-    {{ t('empty.no_nodes') }}<br><br>
-    <code>python3 -m data.seed</code>
-  </div>
+  <div class="empty">{{ t('empty.no_nodes') }} — <code>python3 -m data.seed</code></div>
   {% endif %}
 
   {% if monos %}
@@ -97,7 +131,7 @@
   <div class="quotes">
     {% for m in monos[:4] %}
     <div class="quote">
-      <div class="src">{{ '%02d'|format(m.node_id) }} — {{ m.provider }}, {{ m.location }}</div>
+      <div class="src">{{ m.provider }} &middot; {{ m.location }}</div>
       <div class="txt">{{ m.text }}</div>
     </div>
     {% endfor %}
@@ -111,5 +145,21 @@
   </div>
 
 </div>
+
+<script>
+(function () {
+  var raf = null;
+  document.addEventListener('mousemove', function (e) {
+    var card = e.target.closest && e.target.closest('.card');
+    if (!card || raf) return;
+    raf = requestAnimationFrame(function () {
+      var r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      raf = null;
+    });
+  }, { passive: true });
+})();
+</script>
 </body>
 </html>

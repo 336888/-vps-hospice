@@ -5,195 +5,93 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ n.provider }} {{ n.location }} — {{ t('app.name') }}</title>
 <link rel="stylesheet" href="/static/base.css">
-<style>
-.detail { padding: 48px 18px 34px; border-bottom: 1px solid var(--hair); }
-.detail .idx {
-  font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em;
-  color: var(--muted); margin-bottom: 20px;
-}
-.detail h1 {
-  font-family: var(--serif); font-weight: 400;
-  font-size: clamp(42px, 8.4vw, 104px); line-height: 0.88; letter-spacing: -0.035em;
-  margin-bottom: 12px;
-}
-.detail h1 em { font-style: italic; display: block; font-size: 0.62em; color: var(--muted); }
-.detail .stamp {
-  display: flex; gap: 26px; flex-wrap: wrap;
-  font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--muted); font-weight: 600; margin-top: 26px;
-  border-top: 1px solid var(--hair); padding-top: 14px;
-}
-.detail .stamp b { color: var(--ink); font-weight: 700; }
-
-.bignum {
-  padding: 44px 18px; border-bottom: 1px solid var(--hair);
-  display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
-}
-.bignum .n {
-  font-family: var(--serif); font-size: clamp(72px, 15vw, 190px);
-  line-height: 0.82; letter-spacing: -0.045em;
-  font-variant-numeric: lining-nums tabular-nums;
-}
-.bignum .u {
-  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--muted); font-weight: 700;
-}
-.bignum .to {
-  margin-left: auto; text-align: right;
-  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
-  color: var(--muted); font-weight: 600; line-height: 1.9;
-}
-.bignum .to b { color: var(--ink); font-weight: 700; }
-
-.metrics { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--hair); }
-.metric { padding: 24px 18px; border-right: 1px solid var(--hair); }
-.metric:last-child { border-right: none; }
-.metric .v {
-  font-family: var(--serif); font-size: clamp(26px, 3.6vw, 40px);
-  line-height: 1; letter-spacing: -0.02em; margin-bottom: 8px;
-  font-variant-numeric: lining-nums tabular-nums;
-}
-.metric .k {
-  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--muted); font-weight: 600;
-}
-
-.rows { border-bottom: 1px solid var(--hair); }
-.r {
-  display: grid; grid-template-columns: 1fr 120px 120px 90px;
-  align-items: center; border-bottom: 1px solid var(--hair);
-  transition: background .16s, color .16s;
-}
-.r:last-child { border-bottom: none; }
-.r:hover { background: var(--ink); color: var(--paper); }
-.r:hover .k, .r:hover .sub { color: var(--paper); opacity: .68; }
-.r > div { padding: 15px 14px; }
-.r .k { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
-.r .sub { font-size: 9.5px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 3px; }
-.r .v { font-family: var(--serif); font-size: 19px; text-align: right; font-variant-numeric: lining-nums tabular-nums; }
-.r .p { font-family: var(--mono); font-size: 11px; text-align: right; color: var(--muted); }
-
-.notes { padding: 0; border-bottom: 1px solid var(--hair); }
-.note {
-  padding: 14px 18px; border-bottom: 1px solid var(--hair);
-  font-size: 11px; letter-spacing: 0.06em;
-  display: flex; gap: 12px; align-items: baseline;
-}
-.note:last-child { border-bottom: none; }
-.note .bullet { font-family: var(--mono); font-size: 10px; color: var(--muted); }
-
-.say { padding: 54px 18px 58px; border-bottom: 1px solid var(--hair); }
-.say .quote {
-  font-family: var(--serif); font-size: clamp(22px, 3.6vw, 40px);
-  line-height: 1.32; letter-spacing: -0.018em; max-width: 24ch;
-}
-.say .sig {
-  margin-top: 26px; font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--muted); font-weight: 600;
-}
-
-.past { padding: 0; border-bottom: 1px solid var(--hair); }
-.past .item {
-  padding: 16px 18px; border-bottom: 1px solid var(--hair);
-  display: flex; gap: 20px; align-items: baseline;
-  transition: background .16s, color .16s;
-}
-.past .item:last-child { border-bottom: none; }
-.past .item:hover { background: var(--ink); color: var(--paper); }
-.past .item:hover .t { color: var(--paper); }
-.past .item:hover .d { color: var(--paper); opacity: .6; }
-.past .d { font-family: var(--mono); font-size: 10px; color: var(--muted); flex: 0 0 40px; }
-.past .t { font-family: var(--serif); font-size: 15px; line-height: 1.5; color: var(--ink); }
-
-.dead {
-  padding: 100px 18px; text-align: center; border-bottom: 1px solid var(--hair);
-}
-.dead .k { font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 22px; }
-.dead .t { font-family: var(--serif); font-size: clamp(44px, 9vw, 110px); line-height: 0.9; letter-spacing: -0.03em; }
-.dead .ep { font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--muted); margin-top: 26px; }
-
-@media (max-width: 900px) {
-  .metrics { grid-template-columns: repeat(2, 1fr); }
-  .metric:nth-child(2) { border-right: none; }
-  .metric:nth-child(1), .metric:nth-child(2) { border-bottom: 1px solid var(--hair); }
-  .r { grid-template-columns: 1fr 100px 90px; }
-  .r .p { display: none; }
-  .bignum .to { margin-left: 0; text-align: left; width: 100%; margin-top: 18px; }
-}
-@media (max-width: 560px) {
-  .detail { padding: 34px 14px 26px; }
-  .bignum { padding: 32px 14px; }
-  .metric { padding: 18px 14px; }
-  .r > div { padding: 12px 10px; }
-  .say { padding: 38px 14px 42px; }
-  .past .item { padding: 13px 14px; }
-}
-</style>
 </head>
 <body>
 <div class="shell">
 
   <div class="bar">
-    <span class="mark">{{ t('app.name') }}</span>
+    <span class="mark"><i></i>{{ t('app.name') }}</span>
     <nav>
       <a href="/">{{ t('nav.arena') }}</a>
       <a href="/certify">{{ t('nav.certify') }}</a>
+      <a href="/graveyard">{{ t('nav.graveyard') }}</a>
       <a href="/lang/{{ 'zh' if lang == 'en' else 'en' }}">{{ '中文' if lang == 'en' else 'EN' }}</a>
     </nav>
   </div>
 
-  <div class="detail">
-    <div class="idx">№ {{ '%03d'|format(n.id) }}</div>
-    <h1>{{ n.provider }}<em>{{ n.location }}</em></h1>
-    <div class="stamp">
-      <span>{{ t('label.plan') }} <b>{{ n.plan or '-' }}</b></span>
-      {% if n.price %}<span>{{ t('label.price') }} <b>${{ '%.0f'|format(n.price) }}/{{ t('label.price_unit') }}</b></span>{% endif %}
-      <span>{{ t('label.born') }} <b>{{ born }}</b></span>
-      <span>{{ t('label.uptime') }} <b>{{ alive_days }} {{ t('unit.days') }}</b></span>
-      {% if n.certified %}<span><b>{{ (n.tier or '-')|upper }}</b> {{ t('label.certified') }}</span>{% endif %}
-    </div>
+  <div class="dhead">
+    <div class="idx">NODE {{ '%03d'|format(n.id) }}{% if n.certified %} &middot; {{ (n.tier or '-')|upper }}{% endif %}</div>
+    <h1>{{ n.provider }}</h1>
+    <div class="loc">{{ n.location }} &middot; {{ n.plan or '-' }}{% if n.price %} &middot; ${{ '%.0f'|format(n.price) }}/{{ t('label.price_unit') }}{% endif %}</div>
   </div>
 
   {% if n.died_at %}
-  <div class="dead">
-    <div class="k">{{ t('status.departed') }}</div>
+  <div class="deadband">
+    <div class="k">{{ t('status.departed') }} &middot; {{ born }}</div>
     <div class="t">R.I.P.</div>
     {% if n.epitaph %}<div class="ep">{{ n.epitaph }}</div>{% endif %}
   </div>
   {% else %}
-  <div class="bignum">
+  <div class="dbig">
     <span class="n">{{ pred.days_left }}</span>
     <span class="u">{{ t('unit.days') }}</span>
-    <div class="to">
+    <div class="meta">
       {{ t('label.estimated_end') }}<br><b>{{ pred.death_date }}</b><br>
-      {{ pred.samples }} {{ t('label.samples') }} · {{ t('label.confidence') }} {{ t('conf.' + pred.confidence) }}
+      {{ pred.samples }} {{ t('label.samples') }} &middot; {{ t('label.confidence') }} {{ t('conf.' + pred.confidence) }}
     </div>
   </div>
   {% endif %}
 
-  <div class="metrics">
-    <div class="metric">
-      <div class="v">{{ '%.0f'|format(pred.health) }}</div>
+  <div class="tel">
+    <div>
+      <div class="v {{ 'live' if pred.health >= 70 else ('amber' if pred.health < 40 else '') }}">{{ '%.0f'|format(pred.health) }}</div>
       <div class="k">{{ t('label.health') }}</div>
     </div>
-    <div class="metric">
-      <div class="v">{{ '%.2f'|format(pred.oversell) }}</div>
+    <div>
+      <div class="v {{ 'amber' if pred.oversell > 0.4 else '' }}">{{ '%.2f'|format(pred.oversell) }}</div>
       <div class="k">{{ t('label.oversell') }}</div>
     </div>
-    <div class="metric">
-      <div class="v">{{ '%.0f'|format(pred.mining_risk * 100) }}%</div>
+    <div>
+      <div class="v {{ 'amber' if pred.mining_risk > 0.5 else '' }}">{{ '%.0f'|format(pred.mining_risk * 100) }}%</div>
       <div class="k">{{ t('label.mining') }}</div>
     </div>
-    <div class="metric">
-      <div class="v">{{ pred.decay[0].current if pred.decay else '-' }}</div>
-      <div class="k">{{ t('metric.cpu') }}</div>
+    <div>
+      <div class="v">{{ alive_days }}</div>
+      <div class="k">{{ t('label.uptime') }}</div>
     </div>
   </div>
 
+  {% if spark %}
+  <div class="head">
+    <h2>{{ t('section.telemetry') }}</h2>
+    <span class="meta">{{ pred.samples }} {{ t('label.samples') }}</span>
+  </div>
+  <div class="spark {{ 'warn' if pred.health < 40 else '' }}">
+    <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="rgba(0,229,255,.22)"/>
+          <stop offset="1" stop-color="rgba(0,229,255,0)"/>
+        </linearGradient>
+      </defs>
+      <line class="base" x1="0" y1="39" x2="100" y2="39"/>
+      <polygon class="area" points="{{ spark.area }}"/>
+      <polyline class="line" points="{{ spark.line }}"/>
+    </svg>
+  </div>
+  <div style="height:36px"></div>
+  {% endif %}
+
   {% if pred.warnings %}
-  <div class="notes">
+  <div class="head">
+    <h2>{{ t('section.signals') }}</h2>
+    <span class="meta">{{ pred.warnings|length }}</span>
+  </div>
+  <div style="margin-bottom:44px">
     {% for w in pred.warnings %}
-    <div class="note"><span class="bullet">—</span><span>{{ w }}</span></div>
+    <div class="rowline" style="grid-template-columns:1fr">
+      <div class="k">{{ w }}</div>
+    </div>
     {% endfor %}
   </div>
   {% endif %}
@@ -203,12 +101,12 @@
     <h2>{{ t('section.decay') }}</h2>
     <span class="meta">{{ t('meta.per_month') }}</span>
   </div>
-  <div class="rows">
+  <div style="margin-bottom:44px">
     {% for d in pred.decay %}
-    <div class="r">
+    <div class="rowline">
       <div>
         <div class="k">{{ t('metric.' + d.key) }}</div>
-        <div class="sub">{{ d.initial }} → {{ d.current }}</div>
+        <div class="sub">{{ d.initial }} &rarr; {{ d.current }}</div>
       </div>
       <div class="v">{{ d.current }}</div>
       <div class="p">-{{ '%.2f'|format(d.rate_per_month_pct) }}%/{{ t('unit.month') }}</div>
@@ -219,22 +117,21 @@
   {% endif %}
 
   {% if mono %}
-  <div class="say">
-    <div class="quote">{{ mono.text }}</div>
-    <div class="sig">— {{ t('label.today') }}</div>
+  <div class="sayline">
+    <div class="q">{{ mono.text }}</div>
+    <div class="sig">{{ t('label.today') }}</div>
   </div>
   {% endif %}
 
   {% if history and history|length > 1 %}
-  <div class="head">
+  <div class="head" style="margin-top:40px">
     <h2>{{ t('section.history') }}</h2>
     <span class="meta">{{ history|length - 1 }} {{ t('meta.earlier') }}</span>
   </div>
-  <div class="past">
+  <div style="margin-bottom:44px">
     {% for h in history[1:6] %}
-    <div class="item">
-      <span class="d">#{{ loop.index }}</span>
-      <span class="t">{{ h.text }}</span>
+    <div class="rowline" style="grid-template-columns:1fr">
+      <div style="color:#A1A1AA;font-size:12px;line-height:1.6;letter-spacing:0">{{ h.text }}</div>
     </div>
     {% endfor %}
   </div>

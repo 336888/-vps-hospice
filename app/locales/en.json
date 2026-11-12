@@ -114,5 +114,8 @@
   "label.today": "Today",
   "label.certified": "certified",
   "label.price_unit": "yr",
-  "unit.month": "mo"
+  "unit.month": "mo",
+  "section.telemetry": "Telemetry",
+  "section.signals": "Signals",
+  "graveyard.h1": "They are gone now."
 }

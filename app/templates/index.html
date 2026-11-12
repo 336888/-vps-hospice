@@ -4,240 +4,100 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ t('app.name') }} — {{ t('app.tagline') }}</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#0a0e1a;--card:#121828;--line:#1e2739;--txt:#e6edf7;--dim:#6b7a99;--dim2:#4a5568;
-  --g:#5be49b;--b:#2b7ff5;--y:#ffc24d;--o:#ff8a00;--r:#ff4757;
-}
-body{background:var(--bg);color:var(--txt);
-  font:14px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB",sans-serif;
-  padding:32px 20px 80px;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1180px;margin:0 auto}
-
-.lang{position:fixed;top:16px;right:20px;display:flex;gap:0;
-  background:rgba(18,24,40,.9);border:1px solid var(--line);border-radius:9px;
-  overflow:hidden;backdrop-filter:blur(10px);z-index:100}
-.lang a{padding:6px 13px;font-size:11.5px;font-weight:700;color:var(--dim);
-  text-decoration:none;letter-spacing:.4px;transition:.15s}
-.lang a:hover{color:#8fa6c8;background:rgba(43,127,245,.08)}
-.lang a.on{background:rgba(43,127,245,.16);color:#6aa9ff}
-
-.hero{margin-bottom:34px}
-.hero h1{font-size:34px;font-weight:900;letter-spacing:-1px;line-height:1.15;
-  background:linear-gradient(100deg,#ff6b47 0%,#ffc24d 40%,#5be49b 75%,#4a9eff 100%);
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-  margin-bottom:10px}
-.hero .sub{font-size:14px;color:var(--dim);max-width:620px;line-height:1.7}
-.hero .sub b{color:#8fa6c8;font-weight:600}
-
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:28px 0 32px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;
-  padding:16px 18px;position:relative;overflow:hidden}
-.stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:linear-gradient(180deg,var(--b),transparent)}
-.stat b{display:block;font-size:28px;font-weight:900;line-height:1.1;margin-bottom:2px;
-  font-variant-numeric:tabular-nums}
-.stat span{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1.2px;font-weight:600}
-.stat:nth-child(1) b{color:var(--g)}
-.stat:nth-child(2) b{color:var(--r)}
-.stat:nth-child(3) b{color:var(--y)}
-.stat:nth-child(4) b{color:var(--b)}
-
-.sec{display:flex;align-items:center;gap:10px;margin:0 0 16px}
-.sec h2{font-size:15px;font-weight:800;color:#b8c6db;letter-spacing:.3px}
-.sec .line{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
-.sec .badge{font-size:10.5px;padding:2px 8px;border-radius:6px;font-weight:700;
-  background:rgba(43,127,245,.14);color:#6aa9ff;border:1px solid rgba(43,127,245,.24)}
-
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:14px;margin-bottom:44px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;
-  padding:16px 17px;cursor:pointer;position:relative;overflow:hidden;
-  transition:transform .18s cubic-bezier(.22,.61,.36,1),border-color .18s,box-shadow .18s;
-  text-decoration:none;color:inherit;display:block}
-.card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.45)}
-.card::after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
-.card.g::after{background:var(--g)} .card.b::after{background:var(--b)}
-.card.y::after{background:var(--y)} .card.o::after{background:var(--o)}
-.card.r::after{background:var(--r)}
-.card.g:hover{border-color:rgba(91,228,155,.35)}
-.card.b:hover{border-color:rgba(43,127,245,.35)}
-.card.y:hover{border-color:rgba(255,194,77,.35)}
-.card.o:hover{border-color:rgba(255,138,0,.35)}
-.card.r:hover{border-color:rgba(255,71,87,.35)}
-
-.card .top{display:flex;align-items:center;gap:7px;margin-bottom:12px}
-.card .id{font-size:10.5px;font-weight:800;color:var(--dim2);letter-spacing:.5px}
-.card .prov{font-size:13.5px;font-weight:700}
-.card .loc{margin-left:auto;font-size:11px;color:var(--dim);font-weight:500}
-
-.card .days{display:flex;align-items:baseline;gap:6px;margin-bottom:9px}
-.card .days b{font-size:26px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;
-  white-space:nowrap}
-.card .days span{font-size:11.5px;color:var(--dim);font-weight:600}
-.card.g .days b{color:var(--g)} .card.b .days b{color:var(--b)}
-.card.y .days b{color:var(--y)} .card.o .days b{color:var(--o)}
-.card.r .days b{color:var(--r)}
-
-.card .bar{height:5px;background:#1a2233;border-radius:3px;overflow:hidden;margin-bottom:9px}
-.card .bar>i{display:block;height:100%;border-radius:3px;transition:width .4s ease}
-.card.g .bar>i{background:linear-gradient(90deg,#37d67a,#5be49b)}
-.card.b .bar>i{background:linear-gradient(90deg,#2b7ff5,#5bafff)}
-.card.y .bar>i{background:linear-gradient(90deg,#ffc24d,#ffd36b)}
-.card.o .bar>i{background:linear-gradient(90deg,#ff8a00,#ffab40)}
-.card.r .bar>i{background:linear-gradient(90deg,#ff4757,#ff6b6b)}
-
-.card .meta{display:flex;gap:10px;font-size:11px;color:var(--dim)}
-.card .meta em{font-style:normal;color:#8fa6c8;font-weight:600}
-
-.monos{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
-.mono{background:linear-gradient(145deg,#121828,#0f1421);
-  border:1px solid var(--line);border-radius:14px;padding:17px 18px;position:relative}
-.mono::before{content:"";position:absolute;top:14px;right:16px;width:14px;height:14px;
-  border-radius:50%;background:rgba(106,169,255,.12);box-shadow:0 0 0 4px rgba(106,169,255,.04)}
-.mono .who{font-size:11px;color:var(--dim);margin-bottom:9px;font-weight:600}
-.mono .who em{font-style:normal;color:#6aa9ff}
-.mono .txt{font-size:13.5px;line-height:1.78;color:#c3d0e2}
-
-.foot{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);
-  font-size:12px;color:var(--dim2);display:flex;gap:16px;flex-wrap:wrap}
-.foot a{color:var(--dim);text-decoration:none}
-.foot a:hover{color:#6aa9ff}
-
-.empty{text-align:center;padding:70px 20px;color:var(--dim2);
-  border:1px dashed var(--line);border-radius:14px}
-.empty b{display:block;font-size:15px;color:var(--dim);margin-bottom:8px}
-.empty code{background:#1a2233;padding:2px 7px;border-radius:5px;color:#6aa9ff;font-size:12.5px}
-
-
-/* certified strip */
-.certs{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:13px;margin-bottom:40px}
-.cert{background:linear-gradient(150deg,#151d31,#0e1320);border:1px solid #2a3a5c;
-  border-radius:15px;padding:17px 18px;position:relative;overflow:hidden;
-  transition:transform .18s,border-color .18s}
-.cert:hover{transform:translateY(-2px);border-color:#3d5486}
-.cert::before{content:"";position:absolute;left:0;top:0;right:0;height:3px}
-.cert.p::before{background:linear-gradient(90deg,#e8eef7,#b8c6db)}
-.cert.g::before{background:linear-gradient(90deg,#ffe9a8,#f5b942)}
-.cert.s::before{background:linear-gradient(90deg,#e6ecf5,#9aabc4)}
-.cert .tn{font-size:10px;font-weight:800;letter-spacing:1.6px;margin-bottom:9px}
-.cert.p .tn{color:#e8eef7} .cert.g .tn{color:#ffd97a} .cert.s .tn{color:#c8d6e8}
-.cert .pn{font-size:14px;font-weight:800;margin-bottom:2px}
-.cert .lo{font-size:11px;color:var(--dim);margin-bottom:11px}
-.cert .dd{font-size:21px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums;margin-bottom:2px}
-.cert .dl{font-size:10.5px;color:var(--dim2);margin-bottom:12px}
-.cert .act{display:flex;gap:6px}
-.cert .act a{flex:1;text-align:center;padding:7px 0;border-radius:8px;font-size:11.5px;
-  font-weight:800;text-decoration:none;transition:.15s}
-.cert .buy{background:linear-gradient(135deg,#4a9eff,#2b7ff5);color:#fff}
-.cert .buy:hover{filter:brightness(1.08)}
-.cert .info{background:rgba(43,127,245,.1);color:#6aa9ff;border:1px solid rgba(43,127,245,.22)}
-.cert .info:hover{background:rgba(43,127,245,.16)}
-.cert-empty{background:linear-gradient(150deg,#151d31,#0e1320);border:1px dashed #2a3a5c;
-  border-radius:15px;padding:26px;text-align:center;color:var(--dim);font-size:12.5px}
-.cert-empty a{color:#6aa9ff;font-weight:700;text-decoration:none}
-
-@media(max-width:640px){
-  body{padding:22px 14px 60px}
-  .hero h1{font-size:26px}
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .grid{grid-template-columns:1fr}
-  .stat b{font-size:23px}
-  .lang{top:10px;right:10px}
-}
-</style>
+<link rel="stylesheet" href="/static/base.css">
 </head>
 <body>
+<div class="shell">
 
-<div class="lang">
-  <a href="/lang/zh" class="{{ 'on' if lang=='zh' else '' }}">中文</a>
-  <a href="/lang/en" class="{{ 'on' if lang=='en' else '' }}">EN</a>
-</div>
-
-<div class="wrap">
-
-  <div class="hero">
-    <h1>{{ t('app.name') }}</h1>
-    <div class="sub"><b>{{ t('app.tagline') }}</b> — {{ t('app.desc') }}</div>
+  <div class="bar">
+    <span class="mark">{{ t('app.name') }}</span>
+    <nav>
+      <a href="/" class="on">{{ t('nav.arena') }}</a>
+      <a href="/certify">{{ t('nav.certify') }}</a>
+      <a href="/graveyard">{{ t('nav.graveyard') }}</a>
+      <a href="/lang/{{ 'zh' if lang == 'en' else 'en' }}">{{ '中文' if lang == 'en' else 'EN' }}</a>
+    </nav>
   </div>
 
-  <div class="stats">
-    <div class="stat"><b>{{ stats.alive }}</b><span>{{ t('stat.alive') }}</span></div>
-    <div class="stat"><b>{{ stats.dead }}</b><span>{{ t('stat.dead') }}</span></div>
-    <div class="stat"><b>{{ stats.samples }}</b><span>{{ t('stat.samples') }}</span></div>
-    <div class="stat"><b>{{ stats.avg_days_left }}</b><span>{{ t('stat.avg_days') }}</span></div>
+  <div class="hero">
+    <div class="kicker">{{ t('hero.kicker') }}</div>
+    <h1>{{ t('hero.line1') }}<br>{{ t('hero.line2') }}<br><em>{{ t('hero.line3') }}</em></h1>
+    <div class="sub">{{ t('hero.sub') }}</div>
+  </div>
+
+  <div class="figures">
+    <div class="figure">
+      <div class="num">{{ stats.alive }}</div>
+      <div class="lbl">{{ t('stat.alive') }}</div>
+    </div>
+    <div class="figure">
+      <div class="num">{{ stats.dead }}</div>
+      <div class="lbl">{{ t('stat.dead') }}</div>
+    </div>
+    <div class="figure">
+      <div class="num">{{ stats.samples }}</div>
+      <div class="lbl">{{ t('stat.samples') }}</div>
+    </div>
+    <div class="figure">
+      <div class="num">{{ stats.avg_days_left }}</div>
+      <div class="lbl">{{ t('stat.avg_days') }}</div>
+    </div>
   </div>
 
   {% if certified %}
-  <div class="sec">
-    <h2>Certified</h2>
-    <span class="badge" style="background:rgba(255,217,122,.12);color:#ffd97a;border-color:rgba(255,217,122,.24)">{{ certified|length }}</span>
-    <div class="line"></div>
-    <a href="/certify" style="font-size:11.5px;color:#6aa9ff;text-decoration:none;font-weight:700">{{ t('nav.certify') }} &rarr;</a>
+  <div class="head">
+    <h2>{{ t('section.certified') }}</h2>
+    <span class="meta"><a href="/certify">{{ t('cert.apply') }} →</a></span>
   </div>
-  <div class="certs">
+
+  <div class="list">
     {% for n in certified %}
-    <div class="cert {{ 'p' if n.tier=='platinum' else ('g' if n.tier=='gold' else 's') }}">
-      <div class="tn">{{ n.tier|upper }}</div>
-      <div class="pn">{{ n.provider }}</div>
-      <div class="lo">{{ n.location }}</div>
-      <div class="dd">{{ n.days_left or 0 }}</div>
-      <div class="dl">{{ t('unit.days') }} &middot; {{ '%.0f'|format(n.hp or 0) }}/100</div>
-      <div class="act">
-        {% if n.affiliate %}<a class="buy" href="/go/{{ n.id }}">{{ t('cert.buy') }}</a>{% endif %}
-        <a class="info" href="/node/{{ n.id }}">{{ t('cert.details') }}</a>
-      </div>
+    <div class="row" onclick="location.href='/node/{{ n.id }}'">
+      <div class="idx">{{ '%02d'|format(n.id) }}</div>
+      <div class="who">{{ n.provider }}<span class="dim">{{ n.location }}</span></div>
+      <div class="days">{{ n.days_left or 0 }}<small>{{ t('unit.days') }}</small></div>
+      <div class="tier">{{ (n.tier or '-')|upper }}</div>
+      <a class="go" href="{{ '/go/' + n.id|string if n.affiliate else '/node/' + n.id|string }}">
+        {{ t('cert.buy') if n.affiliate else t('cert.details') }}
+      </a>
     </div>
     {% endfor %}
   </div>
   {% endif %}
 
-
-  <div class="sec">
+  <div class="head">
     <h2>{{ t('section.arena') }}</h2>
-    <span class="badge">{{ alive|length }}</span>
-    <div class="line"></div>
+    <span class="meta">{{ alive|length }} {{ t('meta.tracked') }}</span>
   </div>
 
   {% if alive %}
-  <div class="grid">
+  <div class="list">
     {% for n in alive %}
-    <a class="card {{ n.cls }}" href="/node/{{ n.id }}">
-      <div class="top">
-        <span class="id">#{{ n.id }}</span>
-        <span class="prov">{{ n.provider }}</span>
-        <span class="loc">{{ n.location }}</span>
-      </div>
-      <div class="days">
-        <b>{{ n.days_left or 0 }}</b>
-        <span>{{ t('unit.days') }} · {{ n.death_date or '-' }}</span>
-      </div>
-      <div class="bar"><i style="width:{{ n.pct }}%"></i></div>
-      <div class="meta">
-        <span>{{ t('label.health') }} <em>{{ '%.0f'|format(n.hp or 0) }}</em></span>
-        <span>{{ t('label.oversell') }} <em>{{ '%.2f'|format(n.oversell or 0) }}</em></span>
-        {% if n.price %}<span><em>${{ '%.0f'|format(n.price) }}</em>/{{ t('label.price') }}</span>{% endif %}
-      </div>
-    </a>
+    <div class="row" onclick="location.href='/node/{{ n.id }}'">
+      <div class="idx">{{ '%02d'|format(n.id) }}</div>
+      <div class="who">{{ n.provider }}<span class="dim">{{ n.location }} · {{ n.plan or '-' }}</span></div>
+      <div class="days">{{ n.days_left or 0 }}<small>{{ t('unit.days') }}</small></div>
+      <div class="tier">{{ '%.0f'|format(n.hp or 0) }}/100</div>
+      <a class="go" href="/node/{{ n.id }}">{{ t('cert.details') }}</a>
+    </div>
     {% endfor %}
   </div>
   {% else %}
   <div class="empty">
-    <b>{{ t('empty.no_nodes') }}</b>
-    {{ t('empty.hint') }} <code>python3 -m data.seed</code>
+    {{ t('empty.no_nodes') }}<br><br>
+    <code>python3 -m data.seed</code>
   </div>
   {% endif %}
 
   {% if monos %}
-  <div class="sec">
+  <div class="head">
     <h2>{{ t('section.monologues') }}</h2>
-    {% if not llm %}<span class="badge" style="background:rgba(255,194,77,.12);color:#ffc24d;border-color:rgba(255,194,77,.24)">{{ t('badge.template') }}</span>{% endif %}
-    <div class="line"></div>
+    <span class="meta">{{ t('meta.latest') }}</span>
   </div>
-  <div class="monos">
-    {% for m in monos %}
-    <div class="mono">
-      <div class="who"><em>#{{ m.node_id }} {{ m.provider }}</em> · {{ m.location }}</div>
+  <div class="quotes">
+    {% for m in monos[:4] %}
+    <div class="quote">
+      <div class="src">{{ '%02d'|format(m.node_id) }} — {{ m.provider }}, {{ m.location }}</div>
       <div class="txt">{{ m.text }}</div>
     </div>
     {% endfor %}
@@ -245,11 +105,9 @@ body{background:var(--bg);color:var(--txt);
   {% endif %}
 
   <div class="foot">
-    <a href="/certify">{{ t('nav.certify') }}</a>
-    <a href="/graveyard">{{ t('nav.graveyard') }} ({{ dead_count }})</a>
+    <span>{{ t('footer.data') }}</span>
+    <span>{{ t('footer.method') }}</span>
     <a href="/api/state">{{ t('nav.api') }}</a>
-    <a href="/healthz">status</a>
-    <span style="margin-left:auto">{{ t('app.name') }} · MIT</span>
   </div>
 
 </div>

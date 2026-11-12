@@ -3,215 +3,245 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>#{{ n.id }} {{ n.provider }} — {{ t('app.name') }}</title>
+<title>{{ n.provider }} {{ n.location }} — {{ t('app.name') }}</title>
+<link rel="stylesheet" href="/static/base.css">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0e1a;--card:#121828;--line:#1e2739;--txt:#e6edf7;--dim:#6b7a99;--dim2:#4a5568;
-      --g:#5be49b;--b:#2b7ff5;--y:#ffc24d;--o:#ff8a00;--r:#ff4757}
-body{background:var(--bg);color:var(--txt);
-  font:14px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;
-  padding:32px 20px 80px;-webkit-font-smoothing:antialiased}
-.wrap{max-width:900px;margin:0 auto}
+.detail { padding: 48px 18px 34px; border-bottom: 1px solid var(--hair); }
+.detail .idx {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em;
+  color: var(--muted); margin-bottom: 20px;
+}
+.detail h1 {
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(42px, 8.4vw, 104px); line-height: 0.88; letter-spacing: -0.035em;
+  margin-bottom: 12px;
+}
+.detail h1 em { font-style: italic; display: block; font-size: 0.62em; color: var(--muted); }
+.detail .stamp {
+  display: flex; gap: 26px; flex-wrap: wrap;
+  font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); font-weight: 600; margin-top: 26px;
+  border-top: 1px solid var(--hair); padding-top: 14px;
+}
+.detail .stamp b { color: var(--ink); font-weight: 700; }
 
-.lang{position:fixed;top:16px;right:20px;display:flex;
-  background:rgba(18,24,40,.9);border:1px solid var(--line);border-radius:9px;
-  overflow:hidden;backdrop-filter:blur(10px);z-index:100}
-.lang a{padding:6px 13px;font-size:11.5px;font-weight:700;color:var(--dim);
-  text-decoration:none;letter-spacing:.4px;transition:.15s}
-.lang a:hover{color:#8fa6c8;background:rgba(43,127,245,.08)}
-.lang a.on{background:rgba(43,127,245,.16);color:#6aa9ff}
+.bignum {
+  padding: 44px 18px; border-bottom: 1px solid var(--hair);
+  display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+}
+.bignum .n {
+  font-family: var(--serif); font-size: clamp(72px, 15vw, 190px);
+  line-height: 0.82; letter-spacing: -0.045em;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.bignum .u {
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--muted); font-weight: 700;
+}
+.bignum .to {
+  margin-left: auto; text-align: right;
+  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--muted); font-weight: 600; line-height: 1.9;
+}
+.bignum .to b { color: var(--ink); font-weight: 700; }
 
-a.back{display:inline-flex;align-items:center;gap:6px;color:var(--dim);text-decoration:none;
-  font-size:12.5px;margin-bottom:20px}
-a.back:hover{color:#6aa9ff}
+.metrics { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--hair); }
+.metric { padding: 24px 18px; border-right: 1px solid var(--hair); }
+.metric:last-child { border-right: none; }
+.metric .v {
+  font-family: var(--serif); font-size: clamp(26px, 3.6vw, 40px);
+  line-height: 1; letter-spacing: -0.02em; margin-bottom: 8px;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.metric .k {
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); font-weight: 600;
+}
 
-.head{display:flex;align-items:center;gap:10px;margin-bottom:26px;flex-wrap:wrap}
-.head .id{font-size:11px;font-weight:800;color:var(--dim2);letter-spacing:.5px}
-.head h1{font-size:23px;font-weight:800;letter-spacing:-.3px}
-.head .loc{font-size:13px;color:var(--dim);font-weight:500}
-.head .tag{margin-left:auto;font-size:11px;padding:3px 10px;border-radius:7px;font-weight:700}
-.tag.g{background:rgba(91,228,155,.13);color:var(--g)}
-.tag.b{background:rgba(43,127,245,.13);color:var(--b)}
-.tag.y{background:rgba(255,194,77,.13);color:var(--y)}
-.tag.o{background:rgba(255,138,0,.13);color:var(--o)}
-.tag.r{background:rgba(255,71,87,.13);color:var(--r)}
+.rows { border-bottom: 1px solid var(--hair); }
+.r {
+  display: grid; grid-template-columns: 1fr 120px 120px 90px;
+  align-items: center; border-bottom: 1px solid var(--hair);
+  transition: background .16s, color .16s;
+}
+.r:last-child { border-bottom: none; }
+.r:hover { background: var(--ink); color: var(--paper); }
+.r:hover .k, .r:hover .sub { color: var(--paper); opacity: .68; }
+.r > div { padding: 15px 14px; }
+.r .k { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
+.r .sub { font-size: 9.5px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 3px; }
+.r .v { font-family: var(--serif); font-size: 19px; text-align: right; font-variant-numeric: lining-nums tabular-nums; }
+.r .p { font-family: var(--mono); font-size: 11px; text-align: right; color: var(--muted); }
 
-.hero{background:linear-gradient(150deg,#121828 0%,#0d1220 100%);
-  border:1px solid var(--line);border-radius:20px;padding:36px 24px;text-align:center;
-  margin-bottom:18px;position:relative;overflow:hidden}
-.hero::before{content:"";position:absolute;inset:-50%;pointer-events:none;
-  background:radial-gradient(circle at 50% 0%,rgba(43,127,245,.13),transparent 55%)}
-.hero .lbl{font-size:11.5px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;
-  font-weight:700;margin-bottom:14px;position:relative}
-.hero .num{font-size:76px;font-weight:900;line-height:1;letter-spacing:-3px;
-  font-variant-numeric:tabular-nums;position:relative}
-.hero.g .num{color:var(--g);text-shadow:0 0 44px rgba(91,228,155,.35)}
-.hero.b .num{color:var(--b);text-shadow:0 0 44px rgba(43,127,245,.35)}
-.hero.y .num{color:var(--y);text-shadow:0 0 44px rgba(255,194,77,.3)}
-.hero.o .num{color:var(--o);text-shadow:0 0 44px rgba(255,138,0,.3)}
-.hero.r .num{color:var(--r);text-shadow:0 0 44px rgba(255,71,87,.35)}
-.hero .unit{font-size:15px;font-weight:700;color:var(--dim);margin-left:6px}
-.hero .date{font-size:13px;color:var(--dim);margin-top:12px;position:relative}
-.hero .date em{font-style:normal;color:#8fa6c8;font-weight:700}
+.notes { padding: 0; border-bottom: 1px solid var(--hair); }
+.note {
+  padding: 14px 18px; border-bottom: 1px solid var(--hair);
+  font-size: 11px; letter-spacing: 0.06em;
+  display: flex; gap: 12px; align-items: baseline;
+}
+.note:last-child { border-bottom: none; }
+.note .bullet { font-family: var(--mono); font-size: 10px; color: var(--muted); }
 
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;
-  padding:20px 22px;margin-bottom:14px}
-.card h3{font-size:12px;font-weight:800;color:#b8c6db;letter-spacing:.8px;
-  text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.card h3 .dot{width:5px;height:5px;border-radius:50%;background:var(--b)}
+.say { padding: 54px 18px 58px; border-bottom: 1px solid var(--hair); }
+.say .quote {
+  font-family: var(--serif); font-size: clamp(22px, 3.6vw, 40px);
+  line-height: 1.32; letter-spacing: -0.018em; max-width: 24ch;
+}
+.say .sig {
+  margin-top: 26px; font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--muted); font-weight: 600;
+}
 
-.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:12px}
-.m{background:#0f1421;border:1px solid #1a2233;border-radius:11px;padding:13px 14px}
-.m .k{font-size:10.5px;color:var(--dim);letter-spacing:.8px;text-transform:uppercase;
-  font-weight:700;margin-bottom:5px}
-.m .v{font-size:20px;font-weight:900;font-variant-numeric:tabular-nums;
-  white-space:nowrap;letter-spacing:-.3px}
-.m .d{font-size:11px;color:var(--dim2);margin-top:3px}
-.m.warn .v{color:var(--o)}
-.m.bad .v{color:var(--r)}
-.m.good .v{color:var(--g)}
+.past { padding: 0; border-bottom: 1px solid var(--hair); }
+.past .item {
+  padding: 16px 18px; border-bottom: 1px solid var(--hair);
+  display: flex; gap: 20px; align-items: baseline;
+  transition: background .16s, color .16s;
+}
+.past .item:last-child { border-bottom: none; }
+.past .item:hover { background: var(--ink); color: var(--paper); }
+.past .item:hover .t { color: var(--paper); }
+.past .item:hover .d { color: var(--paper); opacity: .6; }
+.past .d { font-family: var(--mono); font-size: 10px; color: var(--muted); flex: 0 0 40px; }
+.past .t { font-family: var(--serif); font-size: 15px; line-height: 1.5; color: var(--ink); }
 
-.alerts{margin-bottom:14px}
-.alert{background:rgba(255,138,0,.08);border:1px solid rgba(255,138,0,.22);
-  border-radius:10px;padding:11px 14px;font-size:12.5px;color:#ffb066;margin-bottom:8px}
+.dead {
+  padding: 100px 18px; text-align: center; border-bottom: 1px solid var(--hair);
+}
+.dead .k { font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 22px; }
+.dead .t { font-family: var(--serif); font-size: clamp(44px, 9vw, 110px); line-height: 0.9; letter-spacing: -0.03em; }
+.dead .ep { font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--muted); margin-top: 26px; }
 
-.mono{background:linear-gradient(150deg,#141b2e,#0e1320);
-  border:1px solid #232f47;border-radius:16px;padding:24px 26px;margin-bottom:14px;position:relative}
-.mono::before{content:"";position:absolute;top:20px;right:22px;width:18px;height:18px;
-  border-radius:50%;background:rgba(106,169,255,.1);box-shadow:0 0 0 5px rgba(106,169,255,.04)}
-.mono .txt{font-size:15px;line-height:1.95;color:#d0dcec}
-.mono .ts{font-size:11px;color:var(--dim2);margin-top:14px;text-align:right}
-
-.hist{list-style:none}
-.hist li{padding:11px 0;border-bottom:1px solid #1a2233;display:flex;gap:14px}
-.hist li:last-child{border:none;padding-bottom:0}
-.hist .d{font-size:11px;color:var(--dim2);flex:0 0 40px;font-variant-numeric:tabular-nums}
-.hist .t{font-size:12.5px;color:#9fb0c8;line-height:1.7;flex:1}
-
-.foot{margin-top:44px;font-size:12px;color:var(--dim2)}
-.foot a{color:var(--dim);text-decoration:none}
-.foot a:hover{color:#6aa9ff}
-
-@media(max-width:640px){
-  body{padding:20px 14px 60px}
-  .hero .num{font-size:56px}
-  .head h1{font-size:19px}
-  .card{padding:16px}
-  .lang{top:10px;right:10px}
+@media (max-width: 900px) {
+  .metrics { grid-template-columns: repeat(2, 1fr); }
+  .metric:nth-child(2) { border-right: none; }
+  .metric:nth-child(1), .metric:nth-child(2) { border-bottom: 1px solid var(--hair); }
+  .r { grid-template-columns: 1fr 100px 90px; }
+  .r .p { display: none; }
+  .bignum .to { margin-left: 0; text-align: left; width: 100%; margin-top: 18px; }
+}
+@media (max-width: 560px) {
+  .detail { padding: 34px 14px 26px; }
+  .bignum { padding: 32px 14px; }
+  .metric { padding: 18px 14px; }
+  .r > div { padding: 12px 10px; }
+  .say { padding: 38px 14px 42px; }
+  .past .item { padding: 13px 14px; }
 }
 </style>
 </head>
 <body>
+<div class="shell">
 
-<div class="lang">
-  <a href="/lang/zh" class="{{ 'on' if lang=='zh' else '' }}">中文</a>
-  <a href="/lang/en" class="{{ 'on' if lang=='en' else '' }}">EN</a>
-</div>
+  <div class="bar">
+    <span class="mark">{{ t('app.name') }}</span>
+    <nav>
+      <a href="/">{{ t('nav.arena') }}</a>
+      <a href="/certify">{{ t('nav.certify') }}</a>
+      <a href="/lang/{{ 'zh' if lang == 'en' else 'en' }}">{{ '中文' if lang == 'en' else 'EN' }}</a>
+    </nav>
+  </div>
 
-<div class="wrap">
-
-  <a class="back" href="/">← {{ t('nav.back') }}</a>
-
-  <div class="head">
-    <span class="id">#{{ n.id }}</span>
-    <h1>{{ n.provider }}</h1>
-    <span class="loc">{{ n.location }} · {{ n.plan or '-' }}</span>
-    {% if n.died_at %}
-    <span class="tag r">{{ t('status.dead') }}</span>
-    {% else %}
-    <span class="tag {{ cls }}">{{ '%.0f'|format(pred.health) }}/100</span>
-    {% endif %}
+  <div class="detail">
+    <div class="idx">№ {{ '%03d'|format(n.id) }}</div>
+    <h1>{{ n.provider }}<em>{{ n.location }}</em></h1>
+    <div class="stamp">
+      <span>{{ t('label.plan') }} <b>{{ n.plan or '-' }}</b></span>
+      {% if n.price %}<span>{{ t('label.price') }} <b>${{ '%.0f'|format(n.price) }}/{{ t('label.price_unit') }}</b></span>{% endif %}
+      <span>{{ t('label.born') }} <b>{{ born }}</b></span>
+      <span>{{ t('label.uptime') }} <b>{{ alive_days }} {{ t('unit.days') }}</b></span>
+      {% if n.certified %}<span><b>{{ (n.tier or '-')|upper }}</b> {{ t('label.certified') }}</span>{% endif %}
+    </div>
   </div>
 
   {% if n.died_at %}
-  <div class="hero r">
-    <div class="lbl">{{ t('status.departed') }}</div>
-    <div class="num">R.I.P.</div>
-    <div class="date">{{ born }}</div>
+  <div class="dead">
+    <div class="k">{{ t('status.departed') }}</div>
+    <div class="t">R.I.P.</div>
+    {% if n.epitaph %}<div class="ep">{{ n.epitaph }}</div>{% endif %}
   </div>
   {% else %}
-  <div class="hero {{ cls }}">
-    <div class="lbl">{{ t('status.remaining') }}</div>
-    <div class="num">{{ pred.days_left }}<span class="unit">{{ t('unit.day_suffix') }}</span></div>
-    <div class="date">
-      {{ t('death_on', date=pred.death_date) }} ·
-      {{ t('based_on', n=pred.samples) }} ·
-      {{ t('label.confidence') }} <em>{{ t('conf.' + pred.confidence) }}</em>
+  <div class="bignum">
+    <span class="n">{{ pred.days_left }}</span>
+    <span class="u">{{ t('unit.days') }}</span>
+    <div class="to">
+      {{ t('label.estimated_end') }}<br><b>{{ pred.death_date }}</b><br>
+      {{ pred.samples }} {{ t('label.samples') }} · {{ t('label.confidence') }} {{ t('conf.' + pred.confidence) }}
     </div>
   </div>
   {% endif %}
+
+  <div class="metrics">
+    <div class="metric">
+      <div class="v">{{ '%.0f'|format(pred.health) }}</div>
+      <div class="k">{{ t('label.health') }}</div>
+    </div>
+    <div class="metric">
+      <div class="v">{{ '%.2f'|format(pred.oversell) }}</div>
+      <div class="k">{{ t('label.oversell') }}</div>
+    </div>
+    <div class="metric">
+      <div class="v">{{ '%.0f'|format(pred.mining_risk * 100) }}%</div>
+      <div class="k">{{ t('label.mining') }}</div>
+    </div>
+    <div class="metric">
+      <div class="v">{{ pred.decay[0].current if pred.decay else '-' }}</div>
+      <div class="k">{{ t('metric.cpu') }}</div>
+    </div>
+  </div>
 
   {% if pred.warnings %}
-  <div class="alerts">
-    {% for w in pred.warnings %}<div class="alert">{{ w }}</div>{% endfor %}
+  <div class="notes">
+    {% for w in pred.warnings %}
+    <div class="note"><span class="bullet">—</span><span>{{ w }}</span></div>
+    {% endfor %}
   </div>
   {% endif %}
 
-  <div class="card">
-    <h3><span class="dot"></span>{{ t('section.diagnosis') }}</h3>
-    <div class="metrics">
-      <div class="m">
-        <div class="k">{{ t('label.health') }}</div>
-        <div class="v {{ 'good' if pred.health >= 70 else ('warn' if pred.health >= 40 else 'bad') }}">
-          {{ '%.0f'|format(pred.health) }}
-        </div>
-        <div class="d">{{ t('level.full') }}</div>
-      </div>
-      <div class="m {{ 'bad' if pred.oversell > 0.6 else ('warn' if pred.oversell > 0.35 else '') }}">
-        <div class="k">{{ t('label.oversell') }}</div>
-        <div class="v">{{ '%.2f'|format(pred.oversell) }}</div>
-        <div class="d">{{ t('level.severe') if pred.oversell > 0.6 else (t('level.high') if pred.oversell > 0.35 else t('level.normal')) }}</div>
-      </div>
-      <div class="m {{ 'warn' if pred.mining_risk > 0.5 else '' }}">
-        <div class="k">{{ t('label.mining') }}</div>
-        <div class="v">{{ '%.0f'|format(pred.mining_risk * 100) }}<span style="font-size:12px;color:#5a6b8a">%</span></div>
-        <div class="d">-</div>
-      </div>
-      <div class="m">
-        <div class="k">{{ t('label.uptime') }}</div>
-        <div class="v">{{ alive_days }}</div>
-        <div class="d">{{ t('unit.days') }} · {{ t('label.born') }} {{ born }}</div>
-      </div>
-    </div>
-  </div>
-
   {% if pred.decay %}
-  <div class="card">
-    <h3><span class="dot"></span>{{ t('section.decay') }}</h3>
-    <div class="metrics">
-      {% for d in pred.decay %}
-      <div class="m">
+  <div class="head">
+    <h2>{{ t('section.decay') }}</h2>
+    <span class="meta">{{ t('meta.per_month') }}</span>
+  </div>
+  <div class="rows">
+    {% for d in pred.decay %}
+    <div class="r">
+      <div>
         <div class="k">{{ t('metric.' + d.key) }}</div>
-        <div class="v">{{ d.current }}</div>
-        <div class="d">{{ t('decay_pct', rate=-d.rate_per_month_pct, total=d.decay_pct) }}</div>
+        <div class="sub">{{ d.initial }} → {{ d.current }}</div>
       </div>
-      {% endfor %}
+      <div class="v">{{ d.current }}</div>
+      <div class="p">-{{ '%.2f'|format(d.rate_per_month_pct) }}%/{{ t('unit.month') }}</div>
+      <div class="p">{{ d.decay_pct }}%</div>
     </div>
+    {% endfor %}
   </div>
   {% endif %}
 
   {% if mono %}
-  <div class="mono">
-    <div class="txt">{{ mono.text }}</div>
+  <div class="say">
+    <div class="quote">{{ mono.text }}</div>
+    <div class="sig">— {{ t('label.today') }}</div>
   </div>
   {% endif %}
 
   {% if history and history|length > 1 %}
-  <div class="card">
-    <h3><span class="dot"></span>{{ t('section.history') }}</h3>
-    <ul class="hist">
-      {% for h in history[1:] %}
-      <li>
-        <span class="d">#{{ loop.index }}</span>
-        <span class="t">{{ h.text }}</span>
-      </li>
-      {% endfor %}
-    </ul>
+  <div class="head">
+    <h2>{{ t('section.history') }}</h2>
+    <span class="meta">{{ history|length - 1 }} {{ t('meta.earlier') }}</span>
+  </div>
+  <div class="past">
+    {% for h in history[1:6] %}
+    <div class="item">
+      <span class="d">#{{ loop.index }}</span>
+      <span class="t">{{ h.text }}</span>
+    </div>
+    {% endfor %}
   </div>
   {% endif %}
 
   <div class="foot">
-    {{ t('footer.data') }} · {{ t('footer.method') }} ·
+    <a href="/">← {{ t('nav.back') }}</a>
     <a href="/api/node/{{ n.id }}">JSON</a>
   </div>
 

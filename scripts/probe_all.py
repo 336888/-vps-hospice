@@ -9,31 +9,23 @@ from app import db, monologue, prober, survival
 
 def main():
     db.init()
-    targets = [n for n in db.nodes() if not n.get("died_at") and n.get("ssh_host")]
-    if not targets:
-        print("no nodes with ssh config")
-        return
-
+    targets = [n for n in db.nodes(alive_only=True) if n.get("ssh_host")]
     ok = fail = 0
     for n in targets:
-        label = "#%d %s %s" % (n["id"], n["provider"], n["location"])
         try:
-            data = prober.probe(n)
-            db.add_sample(n["id"], data)
-            s = db.samples(n["id"])
-            pred = survival.predict(s)
-            db.save_prediction(n["id"], pred.as_dict())
-            if not db.has_monologue_today(n["id"]):
-                text, mood, dh = monologue.generate(n, s, pred.as_dict(), "zh")
-                db.add_monologue(n["id"], text, mood, dh)
-            p = pred.as_dict()
-            print("ok   %-38s health %5.1f  days %5d" % (label, p["health"], p["days_left"]))
+            db.add_sample(n["id"], prober.probe(n))
+            rows = db.samples(n["id"])
+            pred = survival.predict(rows)
+            db.save_pred(n["id"], pred.as_dict())
+            if not db.spoken_today(n["id"]):
+                text, mood, h = monologue.generate(n, rows, pred.as_dict(), "en")
+                db.add_monologue(n["id"], text, mood, h)
+            print(f"ok   {n['provider']:<12} {n['location']:<14} {pred.health:>6.1f} {pred.days:>5}")
             ok += 1
         except Exception as e:
-            print("fail %-38s %s" % (label, str(e)[:60]))
+            print(f"fail {n['provider']:<12} {n['location']:<14} {str(e)[:60]}")
             fail += 1
-
-    print("\ndone: %d ok, %d failed" % (ok, fail))
+    print(f"\n{ok} ok, {fail} failed")
 
 
 if __name__ == "__main__":

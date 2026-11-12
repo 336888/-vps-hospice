@@ -4,100 +4,59 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ t('graveyard.title') }} — {{ t('app.name') }}</title>
+<link rel="stylesheet" href="/static/base.css">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0e1a;--card:#121828;--line:#1e2739;--txt:#e6edf7;--dim:#6b7a99;--dim2:#4a5568}
-body{background:var(--bg);color:var(--txt);
-  font:14px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;
-  padding:32px 20px 80px;-webkit-font-smoothing:antialiased}
-.wrap{max-width:800px;margin:0 auto}
-
-.lang{position:fixed;top:16px;right:20px;display:flex;
-  background:rgba(18,24,40,.9);border:1px solid var(--line);border-radius:9px;
-  overflow:hidden;backdrop-filter:blur(10px);z-index:100}
-.lang a{padding:6px 13px;font-size:11.5px;font-weight:700;color:var(--dim);
-  text-decoration:none;letter-spacing:.4px;transition:.15s}
-.lang a:hover{color:#8fa6c8;background:rgba(43,127,245,.08)}
-.lang a.on{background:rgba(43,127,245,.16);color:#6aa9ff}
-
-a.back{display:inline-flex;align-items:center;gap:6px;color:var(--dim);text-decoration:none;
-  font-size:12.5px;margin-bottom:20px}
-a.back:hover{color:#6aa9ff}
-
-h1{font-size:28px;font-weight:900;letter-spacing:-.5px;margin-bottom:8px}
-.sub{font-size:13px;color:var(--dim);margin-bottom:34px}
-
-.tomb{background:linear-gradient(160deg,#121828,#0d1220);
-  border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin-bottom:14px;
-  position:relative;overflow:hidden}
-.tomb::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:linear-gradient(180deg,#3a4456,#1e2739)}
-.tomb .top{display:flex;align-items:center;gap:9px;margin-bottom:12px;flex-wrap:wrap}
-.tomb .id{font-size:10.5px;font-weight:800;color:var(--dim2)}
-.tomb .name{font-size:16px;font-weight:800}
-.tomb .loc{font-size:12.5px;color:var(--dim)}
-.tomb .span{margin-left:auto;font-size:11.5px;color:var(--dim2);font-variant-numeric:tabular-nums}
-
-.tomb .life{font-size:12.5px;color:var(--dim);margin-bottom:14px;
-  display:flex;gap:14px;flex-wrap:wrap}
-.tomb .life em{font-style:normal;color:#8fa6c8;font-weight:600}
-
-.tomb .ep{font-size:14px;line-height:1.85;color:#b8c6db;font-style:italic;
-  padding-left:14px;border-left:2px solid #2a3548}
-
-.empty{text-align:center;padding:70px 20px;color:var(--dim2);
-  border:1px dashed var(--line);border-radius:14px}
-.empty b{display:block;font-size:15px;color:var(--dim);margin-bottom:8px}
-
-.foot{margin-top:44px;font-size:12px;color:var(--dim2)}
-@media(max-width:640px){
-  body{padding:20px 14px 60px}
-  h1{font-size:23px}
-  .tomb{padding:18px}
-  .lang{top:10px;right:10px}
-}
+.doc { padding: 56px 18px 34px; border-bottom: 1px solid var(--hair); }
+.doc h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(42px, 8vw, 92px); line-height: .88; letter-spacing: -.035em; }
+.doc .sub { margin-top: 22px; border-top: 1px solid var(--hair); padding-top: 14px; font-size: 12px; color: var(--muted); max-width: 46ch; }
+.tomb { border-bottom: 1px solid var(--hair); padding: 26px 18px 30px; transition: background .16s, color .16s; }
+.tomb:hover { background: var(--ink); color: var(--paper); }
+.tomb:hover .meta, .tomb:hover .ep { color: var(--paper); opacity: .7; }
+.tomb .top { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+.tomb .id { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+.tomb .name { font-family: var(--serif); font-size: 30px; letter-spacing: -.02em; }
+.tomb .loc { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.tomb .meta { font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-left: auto; }
+.tomb .ep { font-family: var(--serif); font-style: italic; font-size: 17px; line-height: 1.55; color: var(--ink); max-width: 50ch; padding-left: 18px; border-left: 1px solid currentColor; }
 </style>
 </head>
 <body>
+<div class="shell">
+  <div class="bar">
+    <span class="mark">{{ t('app.name') }}</span>
+    <nav>
+      <a href="/">{{ t('nav.arena') }}</a>
+      <a href="/certify">{{ t('nav.certify') }}</a>
+      <a href="/graveyard" class="on">{{ t('nav.graveyard') }}</a>
+      <a href="/lang/{{ 'zh' if lang == 'en' else 'en' }}">{{ '中文' if lang == 'en' else 'EN' }}</a>
+    </nav>
+  </div>
 
-<div class="lang">
-  <a href="/lang/zh" class="{{ 'on' if lang=='zh' else '' }}">中文</a>
-  <a href="/lang/en" class="{{ 'on' if lang=='en' else '' }}">EN</a>
-</div>
-
-<div class="wrap">
-
-  <a class="back" href="/">← {{ t('nav.back') }}</a>
-
-  <h1>{{ t('graveyard.title') }}</h1>
-  <div class="sub">{{ t('graveyard.sub') }}</div>
+  <div class="doc">
+    <h1>{{ t('graveyard.title') }}</h1>
+    <div class="sub">{{ t('graveyard.sub') }}</div>
+  </div>
 
   {% if dead %}
     {% for d in dead %}
     <div class="tomb">
       <div class="top">
-        <span class="id">#{{ d.id }}</span>
+        <span class="id">№ {{ '%03d'|format(d.id) }}</span>
         <span class="name">{{ d.provider }}</span>
         <span class="loc">{{ d.location }}</span>
-        <span class="span">{{ d.born_fmt }} → {{ d.died_fmt }}</span>
-      </div>
-      <div class="life">
-        <span>{{ t('graveyard.lived') }} <em>{{ d.lived_days }}</em> {{ t('unit.days') }}</span>
-        <span>{{ t('graveyard.probes') }} <em>{{ d.probe_count }}</em></span>
-        <span>{{ d.plan or '-' }}</span>
+        <span class="meta">{{ d.born_fmt }} — {{ d.died_fmt }} · {{ d.lived_days }} {{ t('unit.days') }}</span>
       </div>
       <div class="ep">{{ d.epitaph or t('empty.no_epitaph') }}</div>
     </div>
     {% endfor %}
   {% else %}
-  <div class="empty">
-    <b>{{ t('empty.graveyard') }}</b>
-    {{ t('empty.graveyard_sub') }}
-  </div>
+  <div class="empty">{{ t('empty.graveyard') }}</div>
   {% endif %}
 
-  <div class="foot">{{ t('footer.rights') }}</div>
-
+  <div class="foot">
+    <a href="/">← {{ t('nav.back') }}</a>
+    <span>{{ t('footer.rights') }}</span>
+  </div>
 </div>
 </body>
 </html>

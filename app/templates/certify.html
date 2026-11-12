@@ -4,191 +4,211 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ t('cert.title') }} — {{ t('app.name') }}</title>
+<link rel="stylesheet" href="/static/base.css">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0e1a;--card:#121828;--line:#1e2739;--txt:#e6edf7;--dim:#6b7a99;--dim2:#4a5568;
-      --g:#5be49b;--b:#2b7ff5;--y:#ffc24d;--o:#ff8a00;--r:#ff4757;
-      --pl:#e8eef7;--go:#ffd97a;--si:#c8d6e8}
-body{background:var(--bg);color:var(--txt);
-  font:14px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;
-  padding:32px 20px 80px;-webkit-font-smoothing:antialiased}
-.wrap{max-width:980px;margin:0 auto}
+.doc { padding: 56px 18px 40px; border-bottom: 1px solid var(--hair); }
+.doc .kicker {
+  font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  font-weight: 700; color: var(--muted); margin-bottom: 26px;
+}
+.doc h1 {
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(40px, 8vw, 96px); line-height: 0.88; letter-spacing: -0.035em;
+  margin-bottom: 26px;
+}
+.doc h1 em { font-style: italic; }
+.doc p {
+  max-width: 56ch; font-size: 13px; line-height: 1.72; color: var(--muted);
+}
+.doc p b { color: var(--ink); font-weight: 600; }
 
-.lang{position:fixed;top:16px;right:20px;display:flex;
-  background:rgba(18,24,40,.9);border:1px solid var(--line);border-radius:9px;
-  overflow:hidden;backdrop-filter:blur(10px);z-index:100}
-.lang a{padding:6px 13px;font-size:11.5px;font-weight:700;color:var(--dim);
-  text-decoration:none;letter-spacing:.4px;transition:.15s}
-.lang a:hover{color:#8fa6c8;background:rgba(43,127,245,.08)}
-.lang a.on{background:rgba(43,127,245,.16);color:#6aa9ff}
+.tiers { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--hair); }
+.tier { padding: 28px 20px 30px; border-right: 1px solid var(--hair); }
+.tier:last-child { border-right: none; }
+.tier .lvl {
+  font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+  font-weight: 800; margin-bottom: 20px;
+}
+.tier .price {
+  font-family: var(--serif); font-size: 42px; line-height: 1; letter-spacing: -0.02em;
+  margin-bottom: 4px; font-variant-numeric: lining-nums tabular-nums;
+}
+.tier .per {
+  font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); font-weight: 600; margin-bottom: 24px;
+}
+.tier .req { border-top: 1px solid var(--hair); padding-top: 16px; }
+.tier .req div {
+  display: flex; justify-content: space-between; padding: 7px 0;
+  font-size: 10.5px; letter-spacing: 0.06em;
+}
+.tier .req div span:first-child { color: var(--muted); }
+.tier .req div span:last-child { font-family: var(--mono); font-weight: 600; }
 
-a.back{display:inline-flex;align-items:center;gap:6px;color:var(--dim);text-decoration:none;
-  font-size:12.5px;margin-bottom:20px}
-a.back:hover{color:#6aa9ff}
+.items { border-bottom: 1px solid var(--hair); }
+.item2 {
+  display: grid; grid-template-columns: 220px 1fr;
+  border-bottom: 1px solid var(--hair);
+  transition: background .16s, color .16s;
+}
+.item2:last-child { border-bottom: none; }
+.item2:hover { background: var(--ink); color: var(--paper); }
+.item2:hover .d { color: var(--paper); opacity: .7; }
+.item2 > div { padding: 17px 18px; }
+.item2 .k { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+.item2 .d { font-size: 12px; color: var(--muted); line-height: 1.65; }
 
-h1{font-size:30px;font-weight:900;letter-spacing:-.8px;margin-bottom:10px;
-  background:linear-gradient(100deg,#ffd97a,#e8eef7 60%,#8fa6c8);
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.lead{font-size:14.5px;color:#9fb0c8;max-width:660px;line-height:1.8;margin-bottom:36px}
+.embed { padding: 0; border-bottom: 1px solid var(--hair); }
+.embed .sample {
+  padding: 34px 18px; border-bottom: 1px solid var(--hair);
+  display: flex; flex-direction: column; gap: 18px; align-items: flex-start;
+  background: #FFFFFF;
+}
+.embed .sample img { display: block; }
+.embed pre {
+  margin: 0; padding: 20px 18px; border-bottom: 1px solid var(--hair);
+  font-family: var(--mono); font-size: 11px; line-height: 1.85;
+  color: var(--muted); overflow-x: auto; white-space: pre;
+}
 
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:36px}
-.tier{background:var(--card);border:1px solid var(--line);border-radius:16px;
-  padding:22px 20px;position:relative;overflow:hidden}
-.tier::before{content:"";position:absolute;left:0;top:0;right:0;height:3px}
-.tier.p::before{background:linear-gradient(90deg,#e8eef7,#b8c6db)}
-.tier.g::before{background:linear-gradient(90deg,#ffe9a8,#f5b942)}
-.tier.s::before{background:linear-gradient(90deg,#e6ecf5,#9aabc4)}
-.tier .name{font-size:11px;font-weight:800;letter-spacing:2px;margin-bottom:10px}
-.tier.p .name{color:var(--pl)} .tier.g .name{color:var(--go)} .tier.s .name{color:var(--si)}
-.tier .req{font-size:12px;color:var(--dim);line-height:1.9;margin-bottom:14px}
-.tier .req em{font-style:normal;color:#8fa6c8;font-weight:700}
-.tier .price{font-size:20px;font-weight:900;color:#fff}
-.tier .price span{font-size:11.5px;color:var(--dim);font-weight:500}
+.cta { padding: 46px 18px; border-bottom: 1px solid var(--hair); }
+.cta h2 { font-family: var(--serif); font-size: 27px; font-weight: 400; margin-bottom: 14px; letter-spacing: -0.015em; }
+.cta p { font-size: 12.5px; color: var(--muted); max-width: 52ch; line-height: 1.7; margin-bottom: 24px; }
+.cta a.btn {
+  display: inline-block; padding: 13px 30px;
+  border: 1px solid var(--hair); background: var(--ink); color: var(--paper);
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700;
+  transition: background .16s, color .16s;
+}
+.cta a.btn:hover { background: var(--paper); color: var(--ink); }
 
-.sec{margin-bottom:32px}
-.sec h2{font-size:15px;font-weight:800;color:#b8c6db;margin-bottom:16px;
-  display:flex;align-items:center;gap:9px}
-.sec h2::before{content:"";width:3px;height:14px;border-radius:2px;background:var(--b)}
-
-.rows{border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.row{display:flex;padding:14px 18px;border-bottom:1px solid var(--line);gap:16px}
-.row:last-child{border:none}
-.row:nth-child(even){background:rgba(18,24,40,.5)}
-.row .k{flex:0 0 180px;font-size:13px;color:#9fb0c8;font-weight:600}
-.row .v{flex:1;font-size:13px;color:var(--dim)}
-
-.badge-demo{background:linear-gradient(150deg,#121828,#0d1220);border:1px solid var(--line);
-  border-radius:14px;padding:24px;text-align:center;margin-bottom:14px}
-.badge-demo img{max-width:100%;height:auto;margin-bottom:14px}
-.code{background:#0d1220;border:1px solid var(--line);border-radius:10px;
-  padding:13px 15px;font:11.5px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace;
-  color:#8fa6c8;overflow-x:auto;white-space:pre-wrap;word-break:break-all}
-
-.cta{background:linear-gradient(150deg,#14203a,#0d1220);border:1px solid #2a3a5c;
-  border-radius:16px;padding:30px 28px;text-align:center}
-.cta h3{font-size:19px;font-weight:900;margin-bottom:10px}
-.cta p{font-size:13px;color:var(--dim);margin-bottom:20px;line-height:1.8}
-.cta a{display:inline-block;padding:12px 30px;border-radius:11px;
-  background:linear-gradient(135deg,#4a9eff,#2b7ff5 55%,#1667d8);
-  color:#fff;text-decoration:none;font-weight:800;font-size:14px;
-  box-shadow:0 8px 22px rgba(43,127,245,.32);transition:.15s}
-.cta a:hover{transform:translateY(-2px);filter:brightness(1.05)}
-
-.foot{margin-top:44px;font-size:12px;color:var(--dim2)}
-
-@media(max-width:760px){
-  .grid3{grid-template-columns:1fr}
-  .row{flex-direction:column;gap:4px}
-  .row .k{flex:none}
-  h1{font-size:24px}
-  .lang{top:10px;right:10px}
+@media (max-width: 860px) {
+  .tiers { grid-template-columns: 1fr; }
+  .tier { border-right: none; border-bottom: 1px solid var(--hair); }
+  .item2 { grid-template-columns: 1fr; }
+  .item2 .k { padding-bottom: 0; }
+  .item2 .d { padding-top: 4px; }
+}
+@media (max-width: 560px) {
+  .doc { padding: 38px 14px 28px; }
+  .tier { padding: 22px 14px; }
+  .item2 > div { padding: 14px; }
 }
 </style>
 </head>
 <body>
+<div class="shell">
 
-<div class="lang">
-  <a href="/lang/zh" class="{{ 'on' if lang=='zh' else '' }}">中文</a>
-  <a href="/lang/en" class="{{ 'on' if lang=='en' else '' }}">EN</a>
-</div>
+  <div class="bar">
+    <span class="mark">{{ t('app.name') }}</span>
+    <nav>
+      <a href="/">{{ t('nav.arena') }}</a>
+      <a href="/certify" class="on">{{ t('nav.certify') }}</a>
+      <a href="/lang/{{ 'zh' if lang == 'en' else 'en' }}">{{ '中文' if lang == 'en' else 'EN' }}</a>
+    </nav>
+  </div>
 
-<div class="wrap">
+  <div class="doc">
+    <div class="kicker">{{ t('cert.kicker') }}</div>
+    <h1>{{ t('cert.h1a') }}<br><em>{{ t('cert.h1b') }}</em></h1>
+    <p>{{ t('cert.lead') }}</p>
+  </div>
 
-  <a class="back" href="/">← {{ t('nav.back') }}</a>
-
-  <h1>{{ t('cert.title') }}</h1>
-  <div class="lead">{{ t('cert.lead') }}</div>
-
-  <div class="grid3">
-    <div class="tier p">
-      <div class="name">PLATINUM</div>
+  <div class="tiers">
+    <div class="tier">
+      <div class="lvl">Platinum</div>
+      <div class="price">$200</div>
+      <div class="per">{{ t('cert.per_quarter') }}</div>
       <div class="req">
-        {{ t('cert.req.health') }} <em>≥ 88</em><br>
-        {{ t('cert.req.days') }} <em>≥ 1500</em><br>
-        {{ t('cert.req.oversell') }} <em>≤ 0.25</em>
+        <div><span>{{ t('cert.req.health') }}</span><span>≥ 88</span></div>
+        <div><span>{{ t('cert.req.days') }}</span><span>≥ 1500</span></div>
+        <div><span>{{ t('cert.req.oversell') }}</span><span>≤ 0.25</span></div>
       </div>
-      <div class="price">$200<span>/{{ t('cert.quarter') }}</span></div>
     </div>
-    <div class="tier g">
-      <div class="name">GOLD</div>
+    <div class="tier">
+      <div class="lvl">Gold</div>
+      <div class="price">$120</div>
+      <div class="per">{{ t('cert.per_quarter') }}</div>
       <div class="req">
-        {{ t('cert.req.health') }} <em>≥ 75</em><br>
-        {{ t('cert.req.days') }} <em>≥ 900</em><br>
-        {{ t('cert.req.oversell') }} <em>≤ 0.40</em>
+        <div><span>{{ t('cert.req.health') }}</span><span>≥ 75</span></div>
+        <div><span>{{ t('cert.req.days') }}</span><span>≥ 900</span></div>
+        <div><span>{{ t('cert.req.oversell') }}</span><span>≤ 0.40</span></div>
       </div>
-      <div class="price">$120<span>/{{ t('cert.quarter') }}</span></div>
     </div>
-    <div class="tier s">
-      <div class="name">SILVER</div>
+    <div class="tier">
+      <div class="lvl">Silver</div>
+      <div class="price">$50</div>
+      <div class="per">{{ t('cert.per_quarter') }}</div>
       <div class="req">
-        {{ t('cert.req.health') }} <em>≥ 60</em><br>
-        {{ t('cert.req.days') }} <em>≥ 400</em><br>
-        {{ t('cert.req.oversell') }} <em>≤ 0.60</em>
+        <div><span>{{ t('cert.req.health') }}</span><span>≥ 60</span></div>
+        <div><span>{{ t('cert.req.days') }}</span><span>≥ 400</span></div>
+        <div><span>{{ t('cert.req.oversell') }}</span><span>≤ 0.60</span></div>
       </div>
-      <div class="price">$50<span>/{{ t('cert.quarter') }}</span></div>
     </div>
   </div>
 
-  <div class="sec">
+  <div class="head">
     <h2>{{ t('cert.what.title') }}</h2>
-    <div class="rows">
-      <div class="row"><div class="k">{{ t('cert.what.badge') }}</div><div class="v">{{ t('cert.what.badge.d') }}</div></div>
-      <div class="row"><div class="k">{{ t('cert.what.home') }}</div><div class="v">{{ t('cert.what.home.d') }}</div></div>
-      <div class="row"><div class="k">{{ t('cert.what.link') }}</div><div class="v">{{ t('cert.what.link.d') }}</div></div>
-      <div class="row"><div class="k">{{ t('cert.what.data') }}</div><div class="v">{{ t('cert.what.data.d') }}</div></div>
-      <div class="row"><div class="k">{{ t('cert.what.promise') }}</div><div class="v">{{ t('cert.what.promise.d') }}</div></div>
-    </div>
+    <span class="meta">05</span>
   </div>
 
-  <div class="sec">
-    <h2>{{ t('cert.embed.title') }}</h2>
+  <div class="items">
+    <div class="item2"><div class="k">{{ t('cert.what.badge') }}</div><div class="d">{{ t('cert.what.badge.d') }}</div></div>
+    <div class="item2"><div class="k">{{ t('cert.what.home') }}</div><div class="d">{{ t('cert.what.home.d') }}</div></div>
+    <div class="item2"><div class="k">{{ t('cert.what.link') }}</div><div class="d">{{ t('cert.what.link.d') }}</div></div>
+    <div class="item2"><div class="k">{{ t('cert.what.data') }}</div><div class="d">{{ t('cert.what.data.d') }}</div></div>
+    <div class="item2"><div class="k">{{ t('cert.what.promise') }}</div><div class="d">{{ t('cert.what.promise.d') }}</div></div>
+  </div>
 
-    <div class="badge-demo">
+  <div class="head">
+    <h2>{{ t('cert.embed.title') }}</h2>
+    <span class="meta">SVG</span>
+  </div>
+
+  <div class="embed">
+    <div class="sample">
       {% if rows %}
-      <img src="/card/{{ rows[0].id }}.svg" alt="card">
-      <br>
-      <img src="/badge/{{ rows[0].id }}.svg" alt="badge">
+      <img src="/card/{{ rows[0].id }}.svg" alt="" height="96">
+      <img src="/badge/{{ rows[0].id }}.svg" alt="" height="20">
       {% else %}
-      <img src="/badge/1.svg" alt="badge">
+      <img src="/badge/1.svg" alt="" height="20">
       {% endif %}
     </div>
-
-    <div class="code">&lt;a href="{{ t('cert.base') }}/go/ID"&gt;
-  &lt;img src="{{ t('cert.base') }}/badge/ID.svg" alt="VPS Hospice"&gt;
-&lt;/a&gt;
-
-&lt;!-- or the larger card --&gt;
-&lt;img src="{{ t('cert.base') }}/card/ID.svg" alt="VPS Hospice"&gt;</div>
+    <pre>&lt;a href="https://{{ t('cert.domain') }}/go/ID"&gt;
+  &lt;img src="https://{{ t('cert.domain') }}/badge/ID.svg" alt=""&gt;
+&lt;/a&gt;</pre>
   </div>
 
   {% if rows %}
-  <div class="sec">
+  <div class="head">
     <h2>{{ t('cert.current') }}</h2>
-    <div class="rows">
-      {% for n in rows %}
-      <div class="row">
-        <div class="k">{{ n.provider }} · {{ n.location }}</div>
-        <div class="v">
-          <b style="color:#ffd97a">{{ (n.tier or 'none')|upper }}</b>
-          · {{ '%.0f'|format(n.hp or 0) }}/100
-          · {{ n.days_left or 0 }} {{ t('unit.days') }}
-          · {{ n.clicks or 0 }} {{ t('cert.clicks') }}
-        </div>
+    <span class="meta">{{ rows|length }}</span>
+  </div>
+  <div class="list">
+    {% for n in rows %}
+    <div class="row" onclick="location.href='/node/{{ n.id }}'">
+      <div class="idx">{{ '%02d'|format(n.id) }}</div>
+      <div class="who">{{ n.provider }}<span class="dim">{{ n.location }}</span></div>
+      <div class="days">{{ n.days_left or 0 }}<small>{{ t('unit.days') }}</small></div>
+      <div class="tier">{{ (n.tier or '-')|upper }}</div>
+      <div class="go" style="justify-self:end;margin-right:14px;font-family:var(--mono);font-size:10px">
+        {{ n.clicks or 0 }}
       </div>
-      {% endfor %}
     </div>
+    {% endfor %}
   </div>
   {% endif %}
 
   <div class="cta">
-    <h3>{{ t('cert.cta.title') }}</h3>
+    <h2>{{ t('cert.cta.title') }}</h2>
     <p>{{ t('cert.cta.sub') }}</p>
-    <a href="mailto:{{ t('cert.email') }}?subject=VPS%20Hospice%20Certification">
-      {{ t('cert.cta.btn') }}
-    </a>
+    <a class="btn" href="mailto:{{ t('cert.email') }}?subject=Certification">{{ t('cert.cta.btn') }}</a>
   </div>
 
-  <div class="foot">{{ t('footer.method') }}</div>
+  <div class="foot">
+    <a href="/">← {{ t('nav.back') }}</a>
+    <span>{{ t('footer.method') }}</span>
+  </div>
 
 </div>
 </body>

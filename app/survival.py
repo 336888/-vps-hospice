@@ -186,3 +186,17 @@ def badge(health):
     if health >= 21:
         return "o", "fire"
     return "r", "skull"
+
+
+def tier(health, days, oversell):
+    """Certification tier for a node."""
+    if health >= 88 and days >= 1500 and oversell <= 0.25:
+        return "platinum"
+    if health >= 75 and days >= 900 and oversell <= 0.40:
+        return "gold"
+    if health >= 60 and days >= 400 and oversell <= 0.60:
+        return "silver"
+    return None
+
+
+TIER_RANK = {"platinum": 3, "gold": 2, "silver": 1, None: 0}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ t('compare.title') }} — {{ t('app.name') }}</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0e1a;--card:#121828;--line:#1e2739;--txt:#e6edf7;--dim:#6b7a99;--dim2:#4a5568;
+      --g:#5be49b;--b:#2b7ff5;--y:#ffc24d;--o:#ff8a00;--r:#ff4757}
+body{background:var(--bg);color:var(--txt);
+  font:14px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;
+  padding:32px 20px 80px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto}
+
+a.back{display:inline-flex;align-items:center;gap:6px;color:var(--dim);text-decoration:none;
+  font-size:12.5px;margin-bottom:20px}
+a.back:hover{color:#6aa9ff}
+
+h1{font-size:26px;font-weight:900;letter-spacing:-.5px;margin-bottom:24px}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:13px 16px;text-align:left;border-bottom:1px solid var(--line)}
+th{font-size:11px;font-weight:800;color:var(--dim);letter-spacing:.8px;text-transform:uppercase}
+tbody tr:hover{background:rgba(43,127,245,.04)}
+td.k{color:#8fa6c8;font-weight:600;width:160px}
+td.big{font-size:19px;font-weight:900;font-variant-numeric:tabular-nums}
+td.big.g{color:var(--g)} td.big.b{color:var(--b)} td.big.y{color:var(--y)}
+td.big.o{color:var(--o)} td.big.r{color:var(--r)}
+
+.empty{text-align:center;padding:70px 20px;color:var(--dim2);
+  border:1px dashed var(--line);border-radius:14px}
+.empty b{display:block;font-size:15px;color:var(--dim);margin-bottom:8px}
+
+.foot{margin-top:44px;font-size:12px;color:var(--dim2)}
+@media(max-width:700px){
+  table{font-size:12px}
+  th,td{padding:9px 8px}
+  td.k{width:110px}
+  td.big{font-size:15px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="/">← {{ t('nav.back') }}</a>
+  <h1>{{ t('compare.title') }}</h1>
+
+  {% if rows %}
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        {% for n in rows %}<th>{{ n.provider }}<br><span style="font-weight:500;text-transform:none">{{ n.location }}</span></th>{% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="k">{{ t('label.plan') }}</td>
+        {% for n in rows %}<td>{{ n.plan or '-' }}</td>{% endfor %}
+      </tr>
+      <tr>
+        <td class="k">{{ t('label.price') }}</td>
+        {% for n in rows %}<td>${{ '%.0f'|format(n.price or 0) }}/{{ t('label.price') }}</td>{% endfor %}
+      </tr>
+      <tr>
+        <td class="k">{{ t('status.remaining') }}</td>
+        {% for n in rows %}
+        <td class="big {{ 'g' if (n.days_left or 0) > 1500 else ('b' if (n.days_left or 0) > 900 else ('y' if (n.days_left or 0) > 400 else ('o' if (n.days_left or 0) > 100 else 'r'))) }}">
+          {{ n.days_left or 0 }}
+        </td>
+        {% endfor %}
+      </tr>
+      <tr>
+        <td class="k">{{ t('label.health') }}</td>
+        {% for n in rows %}<td class="big">{{ '%.0f'|format(n.hp or 0) }}</td>{% endfor %}
+      </tr>
+      <tr>
+        <td class="k">{{ t('label.oversell') }}</td>
+        {% for n in rows %}<td>{{ '%.2f'|format(n.oversell or 0) }}</td>{% endfor %}
+      </tr>
+      <tr>
+        <td class="k">{{ t('label.mining') }}</td>
+        {% for n in rows %}<td>{{ '%.0f'|format((n.mining_risk or 0) * 100) }}%</td>{% endfor %}
+      </tr>
+      <tr>
+        <td class="k">Tier</td>
+        {% for n in rows %}<td><b style="color:#ffd97a">{{ (n.tier or '-')|upper }}</b></td>{% endfor %}
+      </tr>
+      <tr>
+        <td class="k"></td>
+        {% for n in rows %}
+        <td>
+          {% if n.affiliate %}
+          <a href="/go/{{ n.id }}" style="display:inline-block;padding:7px 16px;border-radius:8px;
+             background:linear-gradient(135deg,#4a9eff,#2b7ff5);color:#fff;text-decoration:none;
+             font-size:12px;font-weight:800">{{ t('cert.cta.btn') }}</a>
+          {% else %}-{% endif %}
+        </td>
+        {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <b>{{ t('compare.empty') }}</b>
+  </div>
+  {% endif %}
+
+  <div class="foot">{{ t('footer.method') }}</div>
+
+</div>
+</body>
+</html>

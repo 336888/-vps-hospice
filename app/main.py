@@ -3,10 +3,11 @@ import time
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi import Response
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-from . import db, i18n, monologue, survival
+from . import badge, db, i18n, monologue, survival
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SECRET = os.environ.get("HOSPICE_SECRET", "")
@@ -65,8 +66,18 @@ def home(request: Request):
         n["pct"] = min(100, max(0, float(n.get("days_left") or 0) / 3650 * 100))
     alive.sort(key=lambda x: x.get("days_left") or 0, reverse=True)
 
+    certified = []
+    for n in db.certified_nodes():
+        h = float(n.get("hp") or 0)
+        d = int(n.get("days_left") or 0)
+        n["tier"] = survival.tier(h, d, float(n.get("oversell") or 0))
+        if n["tier"]:
+            certified.append(n)
+    certified.sort(key=lambda x: survival.TIER_RANK.get(x["tier"], 0), reverse=True)
+
     return templates.TemplateResponse(request, "index.html", _ctx(request, {
         "alive": alive,
+        "certified": certified,
         "dead_count": len(dead),
         "stats": db.stats(),
         "monos": db.recent_monologues(6),
@@ -210,6 +221,65 @@ def api_probe(node_id: int):
     db.add_sample(node_id, data)
     return {"ok": True, "data": data, "prediction": _refresh(node_id)}
 
+
+
+@app.get("/badge/{node_id}.svg")
+def badge_small(node_id: int):
+    n = db.node(node_id)
+    if not n:
+        raise HTTPException(404, "not found")
+    health = float(n.get("hp") or 0)
+    days = int(n.get("days_left") or 0)
+    tier_name = survival.tier(health, days, float(n.get("oversell") or 0)) if n.get("certified") else None
+    svg = badge.badge_svg(tier_name or "none", health, days)
+    return Response(svg, media_type="image/svg+xml",
+                    headers={"Cache-Control": "public, max-age=300"})
+
+
+@app.get("/card/{node_id}.svg")
+def badge_card(node_id: int):
+    n = db.node(node_id)
+    if not n:
+        raise HTTPException(404, "not found")
+    health = float(n.get("hp") or 0)
+    days = int(n.get("days_left") or 0)
+    tier_name = survival.tier(health, days, float(n.get("oversell") or 0)) if n.get("certified") else None
+    svg = badge.card_svg(n["provider"], n["location"], tier_name or "none",
+                         health, days, n.get("death_date") or "-")
+    return Response(svg, media_type="image/svg+xml",
+                    headers={"Cache-Control": "public, max-age=300"})
+
+
+@app.get("/go/{node_id}")
+def go_buy(node_id: int):
+    n = db.node(node_id)
+    if not n or not n.get("affiliate"):
+        raise HTTPException(404, "no offer")
+    db.click(node_id)
+    return RedirectResponse(n["affiliate"], status_code=302)
+
+
+@app.get("/certify", response_class=HTMLResponse)
+def certify_page(request: Request):
+    rows = db.certified_nodes()
+    for n in rows:
+        health = float(n.get("hp") or 0)
+        days = int(n.get("days_left") or 0)
+        n["tier"] = survival.tier(health, days, float(n.get("oversell") or 0))
+    return templates.TemplateResponse(request, "certify.html",
+                                      _ctx(request, {"rows": rows}))
+
+
+@app.get("/compare", response_class=HTMLResponse)
+def compare_page(request: Request):
+    ids = [int(x) for x in (request.query_params.get("ids") or "").split(",") if x.isdigit()]
+    rows = [n for n in (db.node(i) for i in ids[:4]) if n]
+    for n in rows:
+        health = float(n.get("hp") or 0)
+        days = int(n.get("days_left") or 0)
+        n["tier"] = survival.tier(health, days, float(n.get("oversell") or 0))
+    return templates.TemplateResponse(request, "compare.html",
+                                      _ctx(request, {"rows": rows}))
 
 @app.get("/healthz")
 def healthz():

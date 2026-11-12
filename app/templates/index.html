@@ -109,6 +109,34 @@ body{background:var(--bg);color:var(--txt);
 .empty b{display:block;font-size:15px;color:var(--dim);margin-bottom:8px}
 .empty code{background:#1a2233;padding:2px 7px;border-radius:5px;color:#6aa9ff;font-size:12.5px}
 
+
+/* certified strip */
+.certs{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:13px;margin-bottom:40px}
+.cert{background:linear-gradient(150deg,#151d31,#0e1320);border:1px solid #2a3a5c;
+  border-radius:15px;padding:17px 18px;position:relative;overflow:hidden;
+  transition:transform .18s,border-color .18s}
+.cert:hover{transform:translateY(-2px);border-color:#3d5486}
+.cert::before{content:"";position:absolute;left:0;top:0;right:0;height:3px}
+.cert.p::before{background:linear-gradient(90deg,#e8eef7,#b8c6db)}
+.cert.g::before{background:linear-gradient(90deg,#ffe9a8,#f5b942)}
+.cert.s::before{background:linear-gradient(90deg,#e6ecf5,#9aabc4)}
+.cert .tn{font-size:10px;font-weight:800;letter-spacing:1.6px;margin-bottom:9px}
+.cert.p .tn{color:#e8eef7} .cert.g .tn{color:#ffd97a} .cert.s .tn{color:#c8d6e8}
+.cert .pn{font-size:14px;font-weight:800;margin-bottom:2px}
+.cert .lo{font-size:11px;color:var(--dim);margin-bottom:11px}
+.cert .dd{font-size:21px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums;margin-bottom:2px}
+.cert .dl{font-size:10.5px;color:var(--dim2);margin-bottom:12px}
+.cert .act{display:flex;gap:6px}
+.cert .act a{flex:1;text-align:center;padding:7px 0;border-radius:8px;font-size:11.5px;
+  font-weight:800;text-decoration:none;transition:.15s}
+.cert .buy{background:linear-gradient(135deg,#4a9eff,#2b7ff5);color:#fff}
+.cert .buy:hover{filter:brightness(1.08)}
+.cert .info{background:rgba(43,127,245,.1);color:#6aa9ff;border:1px solid rgba(43,127,245,.22)}
+.cert .info:hover{background:rgba(43,127,245,.16)}
+.cert-empty{background:linear-gradient(150deg,#151d31,#0e1320);border:1px dashed #2a3a5c;
+  border-radius:15px;padding:26px;text-align:center;color:var(--dim);font-size:12.5px}
+.cert-empty a{color:#6aa9ff;font-weight:700;text-decoration:none}
+
 @media(max-width:640px){
   body{padding:22px 14px 60px}
   .hero h1{font-size:26px}
@@ -139,6 +167,31 @@ body{background:var(--bg);color:var(--txt);
     <div class="stat"><b>{{ stats.samples }}</b><span>{{ t('stat.samples') }}</span></div>
     <div class="stat"><b>{{ stats.avg_days_left }}</b><span>{{ t('stat.avg_days') }}</span></div>
   </div>
+
+  {% if certified %}
+  <div class="sec">
+    <h2>Certified</h2>
+    <span class="badge" style="background:rgba(255,217,122,.12);color:#ffd97a;border-color:rgba(255,217,122,.24)">{{ certified|length }}</span>
+    <div class="line"></div>
+    <a href="/certify" style="font-size:11.5px;color:#6aa9ff;text-decoration:none;font-weight:700">{{ t('nav.certify') }} &rarr;</a>
+  </div>
+  <div class="certs">
+    {% for n in certified %}
+    <div class="cert {{ 'p' if n.tier=='platinum' else ('g' if n.tier=='gold' else 's') }}">
+      <div class="tn">{{ n.tier|upper }}</div>
+      <div class="pn">{{ n.provider }}</div>
+      <div class="lo">{{ n.location }}</div>
+      <div class="dd">{{ n.days_left or 0 }}</div>
+      <div class="dl">{{ t('unit.days') }} &middot; {{ '%.0f'|format(n.hp or 0) }}/100</div>
+      <div class="act">
+        {% if n.affiliate %}<a class="buy" href="/go/{{ n.id }}">{{ t('cert.buy') }}</a>{% endif %}
+        <a class="info" href="/node/{{ n.id }}">{{ t('cert.details') }}</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
 
   <div class="sec">
     <h2>{{ t('section.arena') }}</h2>
@@ -192,6 +245,7 @@ body{background:var(--bg);color:var(--txt);
   {% endif %}
 
   <div class="foot">
+    <a href="/certify">{{ t('nav.certify') }}</a>
     <a href="/graveyard">{{ t('nav.graveyard') }} ({{ dead_count }})</a>
     <a href="/api/state">{{ t('nav.api') }}</a>
     <a href="/healthz">status</a>

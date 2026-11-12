@@ -3,7 +3,7 @@ import os
 from functools import lru_cache
 
 LOCALE_DIR = os.path.join(os.path.dirname(__file__), "locales")
-DEFAULT = "zh"
+DEFAULT = "en"
 SUPPORTED = ("zh", "en")
 
 
@@ -26,9 +26,6 @@ def detect(request) -> str:
     c = request.cookies.get("lang")
     if c in SUPPORTED:
         return c
-    al = (request.headers.get("accept-language") or "").lower()
-    if al.startswith("en"):
-        return "en"
     return DEFAULT
 
 

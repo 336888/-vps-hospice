@@ -29,8 +29,25 @@ CREATE TABLE IF NOT EXISTS nodes (
     mining_risk REAL    DEFAULT 0,
     last_probe  INTEGER,
     died_at     INTEGER,
-    epitaph     TEXT
+    epitaph     TEXT,
+    certified   INTEGER DEFAULT 0,
+    tier        TEXT,
+    affiliate   TEXT,
+    clicks      INTEGER DEFAULT 0,
+    views       INTEGER DEFAULT 0,
+    contact     TEXT,
+    note        TEXT
 );
+
+CREATE TABLE IF NOT EXISTS leads (
+    id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    node_id   INTEGER NOT NULL,
+    ts        INTEGER NOT NULL,
+    ip        TEXT,
+    ua        TEXT,
+    FOREIGN KEY (node_id) REFERENCES nodes(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_leads_node ON leads(node_id, ts DESC);
 
 CREATE TABLE IF NOT EXISTS samples (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -92,9 +109,28 @@ def tx():
         c.close()
 
 
+MIGRATIONS = [
+    ("nodes", "certified", "INTEGER DEFAULT 0"),
+    ("nodes", "tier", "TEXT"),
+    ("nodes", "affiliate", "TEXT"),
+    ("nodes", "clicks", "INTEGER DEFAULT 0"),
+    ("nodes", "views", "INTEGER DEFAULT 0"),
+    ("nodes", "contact", "TEXT"),
+    ("nodes", "note", "TEXT"),
+]
+
+
+def _migrate(c):
+    for table, col, decl in MIGRATIONS:
+        cols = {r[1] for r in c.execute("PRAGMA table_info(%s)" % table)}
+        if col not in cols:
+            c.execute("ALTER TABLE %s ADD COLUMN %s %s" % (table, col, decl))
+
+
 def init():
     with tx() as c:
         c.executescript(SCHEMA)
+        _migrate(c)
 
 
 def nodes(include_dead=True):
@@ -231,3 +267,48 @@ def stats():
         "monologues": mo,
         "avg_days_left": round(avg or 0),
     }
+
+
+def certify(node_id, enabled=True, affiliate=None, contact=None):
+    with tx() as c:
+        c.execute(
+            "UPDATE nodes SET certified=?, affiliate=?, contact=? WHERE id=?",
+            (1 if enabled else 0, affiliate, contact, node_id),
+        )
+
+
+def set_tier(node_id, tier_name):
+    with tx() as c:
+        c.execute("UPDATE nodes SET tier=? WHERE id=?", (tier_name, node_id))
+
+
+def click(node_id):
+    with tx() as c:
+        c.execute("UPDATE nodes SET clicks=clicks+1 WHERE id=?", (node_id,))
+        c.execute("INSERT INTO leads(node_id, ts) VALUES(?,?)",
+                  (node_id, int(time.time())))
+
+
+def view(node_id):
+    with tx() as c:
+        c.execute("UPDATE nodes SET views=views+1 WHERE id=?", (node_id,))
+
+
+def certified_nodes():
+    with tx() as c:
+        rows = c.execute("""
+            SELECT * FROM nodes
+            WHERE certified=1 AND died_at IS NULL
+            ORDER BY days_left DESC
+        """).fetchall()
+        return [dict(r) for r in rows]
+
+
+def click_stats(node_id, days=30):
+    since = int(time.time()) - days * 86400
+    with tx() as c:
+        n = c.execute(
+            "SELECT COUNT(*) v FROM leads WHERE node_id=? AND ts>=?",
+            (node_id, since),
+        ).fetchone()["v"]
+    return n

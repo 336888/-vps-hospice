@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ t('cert.title') }} — {{ t('app.name') }}</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0e1a;--card:#121828;--line:#1e2739;--txt:#e6edf7;--dim:#6b7a99;--dim2:#4a5568;
+      --g:#5be49b;--b:#2b7ff5;--y:#ffc24d;--o:#ff8a00;--r:#ff4757;
+      --pl:#e8eef7;--go:#ffd97a;--si:#c8d6e8}
+body{background:var(--bg);color:var(--txt);
+  font:14px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;
+  padding:32px 20px 80px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:980px;margin:0 auto}
+
+.lang{position:fixed;top:16px;right:20px;display:flex;
+  background:rgba(18,24,40,.9);border:1px solid var(--line);border-radius:9px;
+  overflow:hidden;backdrop-filter:blur(10px);z-index:100}
+.lang a{padding:6px 13px;font-size:11.5px;font-weight:700;color:var(--dim);
+  text-decoration:none;letter-spacing:.4px;transition:.15s}
+.lang a:hover{color:#8fa6c8;background:rgba(43,127,245,.08)}
+.lang a.on{background:rgba(43,127,245,.16);color:#6aa9ff}
+
+a.back{display:inline-flex;align-items:center;gap:6px;color:var(--dim);text-decoration:none;
+  font-size:12.5px;margin-bottom:20px}
+a.back:hover{color:#6aa9ff}
+
+h1{font-size:30px;font-weight:900;letter-spacing:-.8px;margin-bottom:10px;
+  background:linear-gradient(100deg,#ffd97a,#e8eef7 60%,#8fa6c8);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.lead{font-size:14.5px;color:#9fb0c8;max-width:660px;line-height:1.8;margin-bottom:36px}
+
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:36px}
+.tier{background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:22px 20px;position:relative;overflow:hidden}
+.tier::before{content:"";position:absolute;left:0;top:0;right:0;height:3px}
+.tier.p::before{background:linear-gradient(90deg,#e8eef7,#b8c6db)}
+.tier.g::before{background:linear-gradient(90deg,#ffe9a8,#f5b942)}
+.tier.s::before{background:linear-gradient(90deg,#e6ecf5,#9aabc4)}
+.tier .name{font-size:11px;font-weight:800;letter-spacing:2px;margin-bottom:10px}
+.tier.p .name{color:var(--pl)} .tier.g .name{color:var(--go)} .tier.s .name{color:var(--si)}
+.tier .req{font-size:12px;color:var(--dim);line-height:1.9;margin-bottom:14px}
+.tier .req em{font-style:normal;color:#8fa6c8;font-weight:700}
+.tier .price{font-size:20px;font-weight:900;color:#fff}
+.tier .price span{font-size:11.5px;color:var(--dim);font-weight:500}
+
+.sec{margin-bottom:32px}
+.sec h2{font-size:15px;font-weight:800;color:#b8c6db;margin-bottom:16px;
+  display:flex;align-items:center;gap:9px}
+.sec h2::before{content:"";width:3px;height:14px;border-radius:2px;background:var(--b)}
+
+.rows{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.row{display:flex;padding:14px 18px;border-bottom:1px solid var(--line);gap:16px}
+.row:last-child{border:none}
+.row:nth-child(even){background:rgba(18,24,40,.5)}
+.row .k{flex:0 0 180px;font-size:13px;color:#9fb0c8;font-weight:600}
+.row .v{flex:1;font-size:13px;color:var(--dim)}
+
+.badge-demo{background:linear-gradient(150deg,#121828,#0d1220);border:1px solid var(--line);
+  border-radius:14px;padding:24px;text-align:center;margin-bottom:14px}
+.badge-demo img{max-width:100%;height:auto;margin-bottom:14px}
+.code{background:#0d1220;border:1px solid var(--line);border-radius:10px;
+  padding:13px 15px;font:11.5px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace;
+  color:#8fa6c8;overflow-x:auto;white-space:pre-wrap;word-break:break-all}
+
+.cta{background:linear-gradient(150deg,#14203a,#0d1220);border:1px solid #2a3a5c;
+  border-radius:16px;padding:30px 28px;text-align:center}
+.cta h3{font-size:19px;font-weight:900;margin-bottom:10px}
+.cta p{font-size:13px;color:var(--dim);margin-bottom:20px;line-height:1.8}
+.cta a{display:inline-block;padding:12px 30px;border-radius:11px;
+  background:linear-gradient(135deg,#4a9eff,#2b7ff5 55%,#1667d8);
+  color:#fff;text-decoration:none;font-weight:800;font-size:14px;
+  box-shadow:0 8px 22px rgba(43,127,245,.32);transition:.15s}
+.cta a:hover{transform:translateY(-2px);filter:brightness(1.05)}
+
+.foot{margin-top:44px;font-size:12px;color:var(--dim2)}
+
+@media(max-width:760px){
+  .grid3{grid-template-columns:1fr}
+  .row{flex-direction:column;gap:4px}
+  .row .k{flex:none}
+  h1{font-size:24px}
+  .lang{top:10px;right:10px}
+}
+</style>
+</head>
+<body>
+
+<div class="lang">
+  <a href="/lang/zh" class="{{ 'on' if lang=='zh' else '' }}">中文</a>
+  <a href="/lang/en" class="{{ 'on' if lang=='en' else '' }}">EN</a>
+</div>
+
+<div class="wrap">
+
+  <a class="back" href="/">← {{ t('nav.back') }}</a>
+
+  <h1>{{ t('cert.title') }}</h1>
+  <div class="lead">{{ t('cert.lead') }}</div>
+
+  <div class="grid3">
+    <div class="tier p">
+      <div class="name">PLATINUM</div>
+      <div class="req">
+        {{ t('cert.req.health') }} <em>≥ 88</em><br>
+        {{ t('cert.req.days') }} <em>≥ 1500</em><br>
+        {{ t('cert.req.oversell') }} <em>≤ 0.25</em>
+      </div>
+      <div class="price">$200<span>/{{ t('cert.quarter') }}</span></div>
+    </div>
+    <div class="tier g">
+      <div class="name">GOLD</div>
+      <div class="req">
+        {{ t('cert.req.health') }} <em>≥ 75</em><br>
+        {{ t('cert.req.days') }} <em>≥ 900</em><br>
+        {{ t('cert.req.oversell') }} <em>≤ 0.40</em>
+      </div>
+      <div class="price">$120<span>/{{ t('cert.quarter') }}</span></div>
+    </div>
+    <div class="tier s">
+      <div class="name">SILVER</div>
+      <div class="req">
+        {{ t('cert.req.health') }} <em>≥ 60</em><br>
+        {{ t('cert.req.days') }} <em>≥ 400</em><br>
+        {{ t('cert.req.oversell') }} <em>≤ 0.60</em>
+      </div>
+      <div class="price">$50<span>/{{ t('cert.quarter') }}</span></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>{{ t('cert.what.title') }}</h2>
+    <div class="rows">
+      <div class="row"><div class="k">{{ t('cert.what.badge') }}</div><div class="v">{{ t('cert.what.badge.d') }}</div></div>
+      <div class="row"><div class="k">{{ t('cert.what.home') }}</div><div class="v">{{ t('cert.what.home.d') }}</div></div>
+      <div class="row"><div class="k">{{ t('cert.what.link') }}</div><div class="v">{{ t('cert.what.link.d') }}</div></div>
+      <div class="row"><div class="k">{{ t('cert.what.data') }}</div><div class="v">{{ t('cert.what.data.d') }}</div></div>
+      <div class="row"><div class="k">{{ t('cert.what.promise') }}</div><div class="v">{{ t('cert.what.promise.d') }}</div></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>{{ t('cert.embed.title') }}</h2>
+
+    <div class="badge-demo">
+      {% if rows %}
+      <img src="/card/{{ rows[0].id }}.svg" alt="card">
+      <br>
+      <img src="/badge/{{ rows[0].id }}.svg" alt="badge">
+      {% else %}
+      <img src="/badge/1.svg" alt="badge">
+      {% endif %}
+    </div>
+
+    <div class="code">&lt;a href="{{ t('cert.base') }}/go/ID"&gt;
+  &lt;img src="{{ t('cert.base') }}/badge/ID.svg" alt="VPS Hospice"&gt;
+&lt;/a&gt;
+
+&lt;!-- or the larger card --&gt;
+&lt;img src="{{ t('cert.base') }}/card/ID.svg" alt="VPS Hospice"&gt;</div>
+  </div>
+
+  {% if rows %}
+  <div class="sec">
+    <h2>{{ t('cert.current') }}</h2>
+    <div class="rows">
+      {% for n in rows %}
+      <div class="row">
+        <div class="k">{{ n.provider }} · {{ n.location }}</div>
+        <div class="v">
+          <b style="color:#ffd97a">{{ (n.tier or 'none')|upper }}</b>
+          · {{ '%.0f'|format(n.hp or 0) }}/100
+          · {{ n.days_left or 0 }} {{ t('unit.days') }}
+          · {{ n.clicks or 0 }} {{ t('cert.clicks') }}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="cta">
+    <h3>{{ t('cert.cta.title') }}</h3>
+    <p>{{ t('cert.cta.sub') }}</p>
+    <a href="mailto:{{ t('cert.email') }}?subject=VPS%20Hospice%20Certification">
+      {{ t('cert.cta.btn') }}
+    </a>
+  </div>
+
+  <div class="foot">{{ t('footer.method') }}</div>
+
+</div>
+</body>
+</html>

@@ -132,6 +132,20 @@ def run(reset=False):
         db.add_monologue(nid, epitaph, "dying", ts=now - 30 * 86400)
         print("#%-2d %-12s %-12s dead" % (nid, provider, location))
 
+    # certify demo nodes based on freshly computed prediction
+    for n in db.nodes(include_dead=False):
+        p = survival.predict(db.samples(n["id"])).as_dict()
+        t = survival.tier(p["health"], p["days_left"], p["oversell"])
+        if not t:
+            continue
+        db.set_tier(n["id"], t)
+        if n["provider"] in ("Hetzner", "BuyVM", "HostBrr", "RackNerd"):
+            db.certify(
+                n["id"], True,
+                affiliate="https://example.com/order?ref=hospice&plan=%s" % n["id"],
+                contact="sales@example.com",
+            )
+
     st = db.stats()
     print()
     print("%d nodes / %d samples / %d monologues" % (

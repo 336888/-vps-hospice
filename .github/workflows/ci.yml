@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Seed demo data
+        run: python3 -m data.seed
+
+      - name: Import check
+        run: |
+          python3 -c "
+          from app import db, survival, monologue
+          db.init_db()
+          st = db.stats()
+          assert st['total'] > 0, 'seed 失败'
+          print('OK:', st)
+          "
+
+      - name: Prediction sanity
+        run: |
+          python3 -c "
+          from app import db, survival
+          nodes = db.all_nodes()
+          for n in nodes[:3]:
+              s = db.node_samples(n['id'])
+              p = survival.predict(s)
+              assert p.days_left >= 0
+              assert 0 <= p.health <= 100
+              print('#%d %s: %d days, health %.1f' % (n['id'], n['provider'], p.days_left, p.health))
+          "

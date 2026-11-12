@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🪦 墓园 — The Remainder</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0e1a;--card:#121828;--line:#1e2739;--txt:#e6edf7;--dim:#6b7a99;--dim2:#4a5568}
+body{background:var(--bg);color:var(--txt);
+  font:14px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;
+  padding:32px 20px 80px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:800px;margin:0 auto}
+a.back{display:inline-flex;align-items:center;gap:6px;color:var(--dim);text-decoration:none;
+  font-size:12.5px;margin-bottom:20px}
+a.back:hover{color:#6aa9ff}
+
+h1{font-size:28px;font-weight:900;letter-spacing:-.5px;margin-bottom:8px}
+.sub{font-size:13px;color:var(--dim);margin-bottom:34px}
+
+.tomb{
+  background:linear-gradient(160deg,#121828,#0d1220);
+  border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin-bottom:14px;
+  position:relative;overflow:hidden;
+}
+.tomb::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,#3a4456,#1e2739);
+}
+.tomb .top{display:flex;align-items:center;gap:9px;margin-bottom:12px;flex-wrap:wrap}
+.tomb .id{font-size:10.5px;font-weight:800;color:var(--dim2)}
+.tomb .name{font-size:16px;font-weight:800}
+.tomb .loc{font-size:12.5px;color:var(--dim)}
+.tomb .span{margin-left:auto;font-size:11.5px;color:var(--dim2);font-variant-numeric:tabular-nums}
+
+.tomb .life{
+  font-size:12.5px;color:var(--dim);margin-bottom:14px;
+  display:flex;gap:14px;flex-wrap:wrap;
+}
+.tomb .life em{font-style:normal;color:#8fa6c8;font-weight:600}
+
+.tomb .ep{
+  font-size:14px;line-height:1.85;color:#b8c6db;font-style:italic;
+  padding-left:14px;border-left:2px solid #2a3548;
+}
+
+.empty{text-align:center;padding:70px 20px;color:var(--dim2);
+  border:1px dashed var(--line);border-radius:14px}
+.empty b{display:block;font-size:15px;color:var(--dim);margin-bottom:8px}
+
+.foot{margin-top:44px;font-size:12px;color:var(--dim2)}
+@media(max-width:640px){
+  body{padding:20px 14px 60px}
+  h1{font-size:23px}
+  .tomb{padding:18px 18px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="/">← 返回竞技场</a>
+
+  <h1>🪦 墓园</h1>
+  <div class="sub">已经离开的机器。它们曾经也在跑着什么。</div>
+
+  {% if dead %}
+    {% for d in dead %}
+    <div class="tomb">
+      <div class="top">
+        <span class="id">#{{ d.id }}</span>
+        <span class="name">{{ d.provider }}</span>
+        <span class="loc">{{ d.location }}</span>
+        <span class="span">{{ d.born_fmt }} → {{ d.died_fmt }}</span>
+      </div>
+      <div class="life">
+        <span>活了 <em>{{ d.lived_days }}</em> 天</span>
+        <span>采样 <em>{{ d.probe_count }}</em> 次</span>
+        <span>{{ d.plan or '—' }}</span>
+      </div>
+      <div class="ep">{{ d.epitaph or '（它没留下什么）' }}</div>
+    </div>
+    {% endfor %}
+  {% else %}
+  <div class="empty">
+    <b>墓园是空的</b>
+    还没有机器离开。这是好事。
+  </div>
+  {% endif %}
+
+  <div class="foot">The Remainder · 每台机器都值得一个墓志铭</div>
+
+</div>
+</body>
+</html>

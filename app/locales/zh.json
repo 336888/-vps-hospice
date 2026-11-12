@@ -2,26 +2,21 @@
   "app.name": "VPS Hospice",
   "app.tagline": "每台 VPS 都有一段余生",
   "app.desc": "记录衰老、预测死亡、写下它想说的话。",
-
   "nav.arena": "竞技场",
   "nav.graveyard": "墓园",
   "nav.api": "API",
   "nav.back": "返回竞技场",
-
   "stat.alive": "存活中",
   "stat.dead": "已离开",
   "stat.samples": "采样次数",
   "stat.avg_days": "平均剩余",
-
   "unit.days": "天",
   "unit.day": "天",
-
   "section.arena": "竞技场",
   "section.monologues": "它们今天说了什么",
   "section.diagnosis": "诊断",
   "section.decay": "衰减明细",
   "section.history": "它说过的",
-
   "label.health": "健康度",
   "label.oversell": "超售指数",
   "label.mining": "邻居挖矿",
@@ -32,48 +27,40 @@
   "label.born": "开通于",
   "label.confidence": "置信度",
   "label.samples": "次采样",
-
   "status.alive": "存活",
   "status.dead": "已离开",
   "status.remaining": "预计剩余寿命",
   "status.departed": "MACHINE HAS DEPARTED",
-
   "level.normal": "正常",
   "level.high": "偏高",
   "level.severe": "严重",
   "level.good": "良好",
   "level.full": "满分 100",
-
   "conf.high": "高",
   "conf.medium": "中",
   "conf.low": "低",
   "conf.none": "无",
   "conf.none_data": "无数据",
-
   "metric.cpu": "CPU 单核",
   "metric.disk": "磁盘读取",
   "metric.iops": "4K IOPS",
   "metric.monthly_decay": "月衰减",
-
   "empty.no_nodes": "还没有机器",
   "empty.hint": "运行下面的命令生成演示数据",
   "empty.graveyard": "墓园是空的",
   "empty.graveyard_sub": "还没有机器离开。这是好事。",
   "empty.no_epitaph": "它没留下什么",
-
   "graveyard.title": "墓园",
   "graveyard.sub": "已经离开的机器。它们曾经也在跑着什么。",
   "graveyard.lived": "活了",
   "graveyard.probes": "采样",
-
   "footer.data": "数据来自自动探测",
   "footer.method": "生存分析基于指数衰减拟合 + 威布尔分布",
   "footer.rights": "每台机器都值得一个墓志铭",
-
   "badge.template": "模板模式",
-
   "days_left": "{n} 天",
   "death_on": "预计 {date} 离开",
   "based_on": "基于 {n} 次采样",
-  "decay_pct": "月衰减 {rate}% · 累计 {total}%"
+  "decay_pct": "月衰减 {rate}% · 累计 {total}%",
+  "unit.day_suffix": "天"
 }

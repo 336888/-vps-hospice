@@ -132,7 +132,7 @@ a.back:hover{color:#6aa9ff}
   {% else %}
   <div class="hero {{ cls }}">
     <div class="lbl">{{ t('status.remaining') }}</div>
-    <div class="num">{{ pred.days_left }}<span class="unit">{{ t('unit.days') }}</span></div>
+    <div class="num">{{ pred.days_left }}<span class="unit">{{ t('unit.day_suffix') }}</span></div>
     <div class="date">
       {{ t('death_on', date=pred.death_date) }} ·
       {{ t('based_on', n=pred.samples) }} ·

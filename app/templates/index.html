@@ -15,7 +15,14 @@
       <a href="/" class="on">{{ t('nav.arena') }}</a>
       <a href="/certify">{{ t('nav.certify') }}</a>
       <a href="/graveyard">{{ t('nav.graveyard') }}</a>
-      <a href="/lang/{{ 'zh' if lang == 'en' else 'en' }}">{{ '中文' if lang == 'en' else 'EN' }}</a>
+      <details class="langpick"><summary>{{ lang }}</summary><div class="menu">
+        <a href="/lang/en" class="{{ 'on' if lang == 'en' else '' }}">English</a>
+        <a href="/lang/zh" class="{{ 'on' if lang == 'zh' else '' }}">简体中文</a>
+        <a href="/lang/zh-TW" class="{{ 'on' if lang == 'zh-TW' else '' }}">繁體中文</a>
+        <a href="/lang/ja" class="{{ 'on' if lang == 'ja' else '' }}">日本語</a>
+        <a href="/lang/ru" class="{{ 'on' if lang == 'ru' else '' }}">Русский</a>
+        <a href="/lang/de" class="{{ 'on' if lang == 'de' else '' }}">Deutsch</a>
+      </div></details>
     </nav>
   </div>
 
@@ -23,6 +30,11 @@
     <div class="kicker">{{ t('hero.kicker') }}</div>
     <h1>{{ t('hero.line1') }} {{ t('hero.line2') }} <em>{{ t('hero.line3') }}</em></h1>
     <p>{{ t('hero.sub') }}</p>
+  </div>
+
+  <div class="demo">
+    <span class="tag">{{ t('demo.badge') }}</span>
+    <p>{{ t('demo.text') }} <a href="/certify">{{ t('demo.cta') }}</a></p>
   </div>
 
   <div class="figures">
@@ -75,16 +87,24 @@
   <div class="grid">
     {% for n in certified %}
     {% set tier = n.tier or 'silver' %}
-    <div class="card {{ tier }}" onclick="location.href='/node/{{ n.id }}'">
+    <div class="card {{ tier }}" data-id="{{ n.id }}" onclick="location.href='/node/{{ n.id }}'">
       <div class="top">
         <span class="tier">{{ tier|upper }}</span>
         <span class="led"></span>
       </div>
       <div class="name">{{ n.provider }}</div>
       <div class="place">{{ n.location }}</div>
-      <div class="big">{{ n.days_left or 0 }}<em>{{ t('unit.days') }}</em></div>
+      <div class="big"><span data-days="{{ n.id }}">{{ n.days_left or 0 }}</span><em>{{ t('unit.days') }}</em></div>
       <div class="sub">{{ '%.0f'|format(n.hp or 0) }}/100 &middot; OS {{ '%.2f'|format(n.oversell or 0) }}</div>
       <div class="track"><i style="width:{{ ((n.days_left or 0) / 36.5) if (n.days_left or 0) < 3650 else 100 }}%"></i></div>
+      {% if n.spark %}
+      <div class="spark-mini">
+        <svg viewBox="0 0 60 22" preserveAspectRatio="none" aria-hidden="true">
+          <polygon class="a" points="{{ n.spark.area }}"/>
+          <polyline class="l" points="{{ n.spark.line }}"/>
+        </svg>
+      </div>
+      {% endif %}
       <div class="acts">
         {% if n.affiliate %}<a class="buy" href="/go/{{ n.id }}">{{ t('cert.buy') }}</a>{% endif %}
         <a class="info" href="/node/{{ n.id }}">{{ t('cert.details') }}</a>
@@ -103,16 +123,24 @@
   <div class="grid">
     {% for n in alive %}
     {% set d = n.days_left or 0 %}
-    <div class="card {{ 'warn' if d < 400 else '' }}" onclick="location.href='/node/{{ n.id }}'">
+    <div class="card {{ 'warn' if d < 400 else '' }}" data-id="{{ n.id }}" onclick="location.href='/node/{{ n.id }}'">
       <div class="top">
         <span class="tier">{{ n.plan or '-' }}</span>
         <span class="led"></span>
       </div>
       <div class="name">{{ n.provider }}</div>
       <div class="place">{{ n.location }}</div>
-      <div class="big">{{ d }}<em>{{ t('unit.days') }}</em></div>
+      <div class="big"><span data-days="{{ n.id }}">{{ d }}</span><em>{{ t('unit.days') }}</em></div>
       <div class="sub">{{ '%.0f'|format(n.hp or 0) }}/100 &middot; OS {{ '%.2f'|format(n.oversell or 0) }}</div>
       <div class="track"><i style="width:{{ (d / 36.5) if d < 3650 else 100 }}%"></i></div>
+      {% if n.spark %}
+      <div class="spark-mini">
+        <svg viewBox="0 0 60 22" preserveAspectRatio="none" aria-hidden="true">
+          <polygon class="a" points="{{ n.spark.area }}"/>
+          <polyline class="l" points="{{ n.spark.line }}"/>
+        </svg>
+      </div>
+      {% endif %}
       <div class="acts">
         <a class="info" href="/node/{{ n.id }}">{{ t('cert.details') }}</a>
       </div>
@@ -159,7 +187,103 @@
       raf = null;
     });
   }, { passive: true });
+
+  var sheet = document.getElementById('sheet');
+  var backdrop = document.getElementById('backdrop');
+  var holdTimer = null, held = false, currentId = null;
+
+  function openSheet(id) {
+    currentId = id;
+    sheet.querySelector('.h').textContent = 'NODE ' + String(id).padStart(3, '0');
+    sheet.querySelector('[data-act="open"]').href = '/node/' + id;
+    sheet.querySelector('[data-act="api"]').href = '/api/node/' + id;
+    sheet.querySelector('[data-act="probe"]').dataset.id = id;
+    backdrop.classList.add('on');
+    sheet.classList.add('on');
+  }
+
+  function closeSheet() {
+    backdrop.classList.remove('on');
+    sheet.classList.remove('on');
+    currentId = null;
+  }
+
+  function bindHold(el) {
+    var start = function () {
+      held = false;
+      holdTimer = setTimeout(function () {
+        held = true;
+        openSheet(el.dataset.id);
+        if (navigator.vibrate) navigator.vibrate(12);
+      }, 480);
+    };
+    var cancel = function () {
+      if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+    };
+    el.addEventListener('touchstart', start, { passive: true });
+    el.addEventListener('touchend', cancel);
+    el.addEventListener('touchmove', cancel);
+    el.addEventListener('mousedown', start);
+    el.addEventListener('mouseup', cancel);
+    el.addEventListener('mouseleave', cancel);
+    el.addEventListener('click', function (e) {
+      if (held) { e.preventDefault(); e.stopPropagation(); held = false; }
+    }, true);
+    el.addEventListener('contextmenu', function (e) {
+      e.preventDefault();
+      openSheet(el.dataset.id);
+    });
+  }
+
+  document.querySelectorAll('.card[data-id]').forEach(bindHold);
+  if (backdrop) backdrop.addEventListener('click', closeSheet);
+
+  var probeBtn = sheet && sheet.querySelector('[data-act="probe"]');
+  if (probeBtn) {
+    probeBtn.addEventListener('click', function () {
+      if (!currentId) return;
+      probeBtn.textContent = 'probing...';
+      fetch('/api/probe/' + currentId, { method: 'POST' })
+        .then(function (r) { return r.json(); })
+        .then(function () { location.reload(); })
+        .catch(function () { probeBtn.textContent = 'probe failed'; });
+    });
+  }
+
+  /* live refresh every 30s, flash changed numbers */
+  var cache = {};
+  function tick() {
+    fetch('/api/state', { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        (d.nodes || []).forEach(function (n) {
+          var prev = cache[n.id];
+          var el = document.querySelector('[data-days="' + n.id + '"]');
+          if (el && prev !== undefined && prev !== n.days_left) {
+            el.textContent = n.days_left;
+            el.classList.remove('flash');
+            void el.offsetWidth;
+            el.classList.add('flash');
+          }
+          cache[n.id] = n.days_left;
+        });
+        var live = document.querySelector('.fig.live .n');
+        if (live && d.stats) live.textContent = d.stats.alive;
+      })
+      .catch(function () {});
+  }
+  tick();
+  setInterval(tick, 30000);
 })();
 </script>
+
+<div class="backdrop" id="backdrop"></div>
+<div class="sheet" id="sheet">
+  <div class="h">NODE</div>
+  <a data-act="open" href="#">Open detail</a>
+  <a data-act="api" href="#">JSON</a>
+  <button data-act="probe" class="danger" data-id="">Run probe</button>
+</div>
+
 </body>
 </html>

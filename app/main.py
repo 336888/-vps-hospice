@@ -46,6 +46,28 @@ def _spark(rows, w=100, h=40):
     return {"line": line, "area": f"0,{h} {line} {w},{h}"}
 
 
+
+def _proj(rows, fits, w=100, h=40, months=18):
+    if not fits or not rows:
+        return None
+    cpu = next((f for f in fits if f.key == "cpu"), None)
+    if not cpu or cpu.y0 <= 0:
+        return None
+    vals = [float(r.get("cpu_single") or 0) for r in rows if r.get("cpu_single")]
+    if len(vals) < 2:
+        return None
+    lo, hi = min(vals), max(vals) or 1
+    span = (hi - lo) or 1
+    pts = []
+    for i in range(7):
+        m = months * i / 6
+        v = cpu.last * (2.718281828 ** (-cpu.k * 30 * m))
+        x = 100 + i * 8
+        y = h - (v - lo) / span * (h - 4) - 2
+        pts.append(f"{x:.1f},{y:.1f}")
+    return " ".join(pts)
+
+
 def _with_tier(rows):
     for n in rows:
         n["tier"] = survival.tier(float(n.get("hp") or 0), int(n.get("days_left") or 0),
@@ -60,6 +82,9 @@ def home(req: Request):
     alive.sort(key=lambda n: n.get("days_left") or 0, reverse=True)
     cert = sorted(_with_tier(db.certified()),
                   key=lambda n: survival.TIER_RANK.get(n["tier"], 0), reverse=True)
+    for n in alive + cert:
+        n["spark"] = _spark(db.samples(n["id"], 60), w=60, h=22)
+
     return tpl.TemplateResponse(req, "index.html", _ctx(req, {
         "alive": alive,
         "certified": cert,
@@ -92,6 +117,7 @@ def node_page(req: Request, nid: int):
         "n": n, "pred": pred, "mono": mono,
         "history": db.node_monologues(nid, 10),
         "spark": _spark(rows),
+        "proj": _proj(rows, survival.predict(rows).fits),
         "born": _date(n.get("started_at")),
         "alive_days": max(0, int((time.time() - (n.get("started_at") or 0)) // 86400)),
     }))

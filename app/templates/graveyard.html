@@ -14,7 +14,14 @@
       <a href="/">{{ t('nav.arena') }}</a>
       <a href="/certify">{{ t('nav.certify') }}</a>
       <a href="/graveyard" class="on">{{ t('nav.graveyard') }}</a>
-      <a href="/lang/{{ 'zh' if lang == 'en' else 'en' }}">{{ '中文' if lang == 'en' else 'EN' }}</a>
+      <details class="langpick"><summary>{{ lang }}</summary><div class="menu">
+        <a href="/lang/en" class="{{ 'on' if lang == 'en' else '' }}">English</a>
+        <a href="/lang/zh" class="{{ 'on' if lang == 'zh' else '' }}">简体中文</a>
+        <a href="/lang/zh-TW" class="{{ 'on' if lang == 'zh-TW' else '' }}">繁體中文</a>
+        <a href="/lang/ja" class="{{ 'on' if lang == 'ja' else '' }}">日本語</a>
+        <a href="/lang/ru" class="{{ 'on' if lang == 'ru' else '' }}">Русский</a>
+        <a href="/lang/de" class="{{ 'on' if lang == 'de' else '' }}">Deutsch</a>
+      </div></details>
     </nav>
   </div>
 

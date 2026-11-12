@@ -117,5 +117,8 @@
   "unit.month": "月",
   "section.telemetry": "遥测",
   "section.signals": "信号",
-  "graveyard.h1": "它们已经不在了。"
+  "graveyard.h1": "它们已经不在了。",
+  "demo.badge": "演示",
+  "demo.text": "这里没有一台真实机器。合成样本、合成节奏，只是为了让图表有东西可画。等商家把机器交过来，就换成真的。",
+  "demo.cta": "提交机器"
 }

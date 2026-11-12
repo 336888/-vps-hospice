@@ -117,5 +117,8 @@
   "unit.month": "mo",
   "section.telemetry": "Telemetry",
   "section.signals": "Signals",
-  "graveyard.h1": "They are gone now."
+  "graveyard.h1": "They are gone now.",
+  "demo.badge": "demo",
+  "demo.text": "None of these machines exist. Synthetic samples on a synthetic schedule, kept here so the charts have something to draw. Real numbers land when vendors hand over nodes.",
+  "demo.cta": "hand over a node"
 }

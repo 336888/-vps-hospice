@@ -18,6 +18,14 @@ app.mount("/static", StaticFiles(directory=os.path.join(HERE, "templates")), nam
 db.init()
 
 
+class CachedHTML(HTMLResponse):
+    def __init__(self, content, status_code=200, max_age=60):
+        super().__init__(
+            content, status_code=status_code,
+            headers={"Cache-Control": f"public, max-age={max_age}, stale-while-revalidate=300"},
+        )
+
+
 def _ctx(req, extra=None):
     lang = i18n.detect(req)
     ctx = {"request": req, "t": i18n.translator(lang), "lang": lang}
@@ -85,12 +93,14 @@ def home(req: Request):
     for n in alive + cert:
         n["spark"] = _spark(db.samples(n["id"], 60), w=60, h=22)
 
-    return tpl.TemplateResponse(req, "index.html", _ctx(req, {
+    resp = tpl.TemplateResponse(req, "index.html", _ctx(req, {
         "alive": alive,
         "certified": cert,
         "stats": db.stats(),
         "monos": db.monologues(6),
     }))
+    resp.headers["Cache-Control"] = "public, max-age=60, stale-while-revalidate=300"
+    return resp
 
 
 @app.get("/node/{nid}", response_class=HTMLResponse)
@@ -113,7 +123,7 @@ def node_page(req: Request, nid: int):
         db.add_monologue(nid, text, mood, h)
         mono = {"text": text, "ts": int(time.time())}
 
-    return tpl.TemplateResponse(req, "node.html", _ctx(req, {
+    resp = tpl.TemplateResponse(req, "node.html", _ctx(req, {
         "n": n, "pred": pred, "mono": mono,
         "history": db.node_monologues(nid, 10),
         "spark": _spark(rows),
@@ -121,6 +131,8 @@ def node_page(req: Request, nid: int):
         "born": _date(n.get("started_at")),
         "alive_days": max(0, int((time.time() - (n.get("started_at") or 0)) // 86400)),
     }))
+    resp.headers["Cache-Control"] = "public, max-age=120, stale-while-revalidate=600"
+    return resp
 
 
 @app.get("/graveyard", response_class=HTMLResponse)

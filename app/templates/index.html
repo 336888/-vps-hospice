@@ -1,74 +1,62 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="{{ lang }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VPS Hospice — 100 台 VPS 的余生</title>
-<meta name="description" content="每台 VPS 都有一段余生。我们记录它的衰老、预测它的死亡、写下它想说的话。">
+<title>{{ t('app.name') }} — {{ t('app.tagline') }}</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#0a0e1a; --card:#121828; --line:#1e2739;
-  --txt:#e6edf7; --dim:#6b7a99; --dim2:#4a5568;
-  --g:#5be49b; --b:#2b7ff5; --y:#ffc24d; --o:#ff8a00; --r:#ff4757;
+  --bg:#0a0e1a;--card:#121828;--line:#1e2739;--txt:#e6edf7;--dim:#6b7a99;--dim2:#4a5568;
+  --g:#5be49b;--b:#2b7ff5;--y:#ffc24d;--o:#ff8a00;--r:#ff4757;
 }
-body{
-  background:var(--bg); color:var(--txt);
+body{background:var(--bg);color:var(--txt);
   font:14px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB",sans-serif;
-  padding:32px 20px 80px;
-  -webkit-font-smoothing:antialiased;
-}
+  padding:32px 20px 80px;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1180px;margin:0 auto}
 
-/* 顶部 */
-.hero{margin-bottom:36px}
-.hero h1{
-  font-size:34px;font-weight:900;letter-spacing:-1px;line-height:1.15;
+.lang{position:fixed;top:16px;right:20px;display:flex;gap:0;
+  background:rgba(18,24,40,.9);border:1px solid var(--line);border-radius:9px;
+  overflow:hidden;backdrop-filter:blur(10px);z-index:100}
+.lang a{padding:6px 13px;font-size:11.5px;font-weight:700;color:var(--dim);
+  text-decoration:none;letter-spacing:.4px;transition:.15s}
+.lang a:hover{color:#8fa6c8;background:rgba(43,127,245,.08)}
+.lang a.on{background:rgba(43,127,245,.16);color:#6aa9ff}
+
+.hero{margin-bottom:34px}
+.hero h1{font-size:34px;font-weight:900;letter-spacing:-1px;line-height:1.15;
   background:linear-gradient(100deg,#ff6b47 0%,#ffc24d 40%,#5be49b 75%,#4a9eff 100%);
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-  margin-bottom:10px;
-}
+  margin-bottom:10px}
 .hero .sub{font-size:14px;color:var(--dim);max-width:620px;line-height:1.7}
 .hero .sub b{color:#8fa6c8;font-weight:600}
 
-/* 统计 */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:28px 0 32px}
-.stat{
-  background:var(--card);border:1px solid var(--line);border-radius:14px;
-  padding:16px 18px;position:relative;overflow:hidden;
-}
-.stat::before{
-  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:linear-gradient(180deg,var(--b),transparent);
-}
-.stat b{display:block;font-size:28px;font-weight:900;line-height:1.1;margin-bottom:2px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:16px 18px;position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--b),transparent)}
+.stat b{display:block;font-size:28px;font-weight:900;line-height:1.1;margin-bottom:2px;
+  font-variant-numeric:tabular-nums}
 .stat span{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1.2px;font-weight:600}
 .stat:nth-child(1) b{color:var(--g)}
 .stat:nth-child(2) b{color:var(--r)}
 .stat:nth-child(3) b{color:var(--y)}
 .stat:nth-child(4) b{color:var(--b)}
 
-/* 区块标题 */
 .sec{display:flex;align-items:center;gap:10px;margin:0 0 16px}
 .sec h2{font-size:15px;font-weight:800;color:#b8c6db;letter-spacing:.3px}
 .sec .line{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
-.sec .badge{
-  font-size:10.5px;padding:2px 8px;border-radius:6px;font-weight:700;
-  background:rgba(43,127,245,.14);color:#6aa9ff;border:1px solid rgba(43,127,245,.24);
-}
+.sec .badge{font-size:10.5px;padding:2px 8px;border-radius:6px;font-weight:700;
+  background:rgba(43,127,245,.14);color:#6aa9ff;border:1px solid rgba(43,127,245,.24)}
 
-/* 卡片网格 */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:14px;margin-bottom:44px}
-.card{
-  background:var(--card);border:1px solid var(--line);border-radius:14px;
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;
   padding:16px 17px;cursor:pointer;position:relative;overflow:hidden;
   transition:transform .18s cubic-bezier(.22,.61,.36,1),border-color .18s,box-shadow .18s;
-  text-decoration:none;color:inherit;display:block;
-}
+  text-decoration:none;color:inherit;display:block}
 .card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.45)}
-.card::after{
-  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;
-}
+.card::after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
 .card.g::after{background:var(--g)} .card.b::after{background:var(--b)}
 .card.y::after{background:var(--y)} .card.o::after{background:var(--o)}
 .card.r::after{background:var(--r)}
@@ -101,32 +89,22 @@ body{
 .card .meta{display:flex;gap:10px;font-size:11px;color:var(--dim)}
 .card .meta em{font-style:normal;color:#8fa6c8;font-weight:600}
 
-/* 独白 */
 .monos{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
-.mono{
-  background:linear-gradient(145deg,#121828,#0f1421);
-  border:1px solid var(--line);border-radius:14px;padding:17px 18px;
-  position:relative;
-}
-.mono::before{
-  content:"💭";position:absolute;top:12px;right:14px;font-size:13px;opacity:.35;
-}
+.mono{background:linear-gradient(145deg,#121828,#0f1421);
+  border:1px solid var(--line);border-radius:14px;padding:17px 18px;position:relative}
+.mono::before{content:"";position:absolute;top:14px;right:16px;width:14px;height:14px;
+  border-radius:50%;background:rgba(106,169,255,.12);box-shadow:0 0 0 4px rgba(106,169,255,.04)}
 .mono .who{font-size:11px;color:var(--dim);margin-bottom:9px;font-weight:600}
 .mono .who em{font-style:normal;color:#6aa9ff}
 .mono .txt{font-size:13.5px;line-height:1.78;color:#c3d0e2}
-.mono .txt::first-letter{font-size:16px}
 
-/* 页脚 */
 .foot{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);
-      font-size:12px;color:var(--dim2);display:flex;gap:16px;flex-wrap:wrap}
+  font-size:12px;color:var(--dim2);display:flex;gap:16px;flex-wrap:wrap}
 .foot a{color:var(--dim);text-decoration:none}
 .foot a:hover{color:#6aa9ff}
 
-/* 空状态 */
-.empty{
-  text-align:center;padding:70px 20px;color:var(--dim2);
-  border:1px dashed var(--line);border-radius:14px;
-}
+.empty{text-align:center;padding:70px 20px;color:var(--dim2);
+  border:1px dashed var(--line);border-radius:14px}
 .empty b{display:block;font-size:15px;color:var(--dim);margin-bottom:8px}
 .empty code{background:#1a2233;padding:2px 7px;border-radius:5px;color:#6aa9ff;font-size:12.5px}
 
@@ -136,30 +114,34 @@ body{
   .stats{grid-template-columns:repeat(2,1fr)}
   .grid{grid-template-columns:1fr}
   .stat b{font-size:23px}
+  .lang{top:10px;right:10px}
 }
 </style>
 </head>
 <body>
+
+<div class="lang">
+  <a href="/lang/zh" class="{{ 'on' if lang=='zh' else '' }}">中文</a>
+  <a href="/lang/en" class="{{ 'on' if lang=='en' else '' }}">EN</a>
+</div>
+
 <div class="wrap">
 
   <div class="hero">
-    <h1>⏳ VPS Hospice</h1>
-    <div class="sub">
-      每台 VPS 都有一段余生。<b>我们记录它的衰老、预测它的死亡、写下它想说的话。</b><br>
-      数据来自真实探测 —— 指数衰减拟合 + 威布尔生存函数。
-    </div>
+    <h1>{{ t('app.name') }}</h1>
+    <div class="sub"><b>{{ t('app.tagline') }}</b> — {{ t('app.desc') }}</div>
   </div>
 
   <div class="stats">
-    <div class="stat"><b>{{ stats.alive }}</b><span>存活中</span></div>
-    <div class="stat"><b>{{ stats.dead }}</b><span>已离开</span></div>
-    <div class="stat"><b>{{ stats.samples }}</b><span>采样次数</span></div>
-    <div class="stat"><b>{{ stats.avg_days_left }}</b><span>平均剩余天数</span></div>
+    <div class="stat"><b>{{ stats.alive }}</b><span>{{ t('stat.alive') }}</span></div>
+    <div class="stat"><b>{{ stats.dead }}</b><span>{{ t('stat.dead') }}</span></div>
+    <div class="stat"><b>{{ stats.samples }}</b><span>{{ t('stat.samples') }}</span></div>
+    <div class="stat"><b>{{ stats.avg_days_left }}</b><span>{{ t('stat.avg_days') }}</span></div>
   </div>
 
   <div class="sec">
-    <h2>🏟️ 竞技场</h2>
-    <span class="badge">{{ alive|length }} 台</span>
+    <h2>{{ t('section.arena') }}</h2>
+    <span class="badge">{{ alive|length }}</span>
     <div class="line"></div>
   </div>
 
@@ -174,28 +156,28 @@ body{
       </div>
       <div class="days">
         <b>{{ n.days_left or 0 }}</b>
-        <span>天 · {{ n.death_date or '—' }}</span>
+        <span>{{ t('unit.days') }} · {{ n.death_date or '-' }}</span>
       </div>
       <div class="bar"><i style="width:{{ n.pct }}%"></i></div>
       <div class="meta">
-        <span>健康 <em>{{ '%.0f'|format(n.hp or 0) }}</em></span>
-        <span>超售 <em>{{ '%.2f'|format(n.oversell or 0) }}</em></span>
-        {% if n.price %}<span><em>${{ '%.0f'|format(n.price) }}</em>/年</span>{% endif %}
+        <span>{{ t('label.health') }} <em>{{ '%.0f'|format(n.hp or 0) }}</em></span>
+        <span>{{ t('label.oversell') }} <em>{{ '%.2f'|format(n.oversell or 0) }}</em></span>
+        {% if n.price %}<span><em>${{ '%.0f'|format(n.price) }}</em>/{{ t('label.price') }}</span>{% endif %}
       </div>
     </a>
     {% endfor %}
   </div>
   {% else %}
   <div class="empty">
-    <b>还没有机器</b>
-    运行 <code>python3 -m data.seed</code> 生成演示数据
+    <b>{{ t('empty.no_nodes') }}</b>
+    {{ t('empty.hint') }} <code>python3 -m data.seed</code>
   </div>
   {% endif %}
 
   {% if monos %}
   <div class="sec">
-    <h2>💭 它们今天说了什么</h2>
-    {% if not llm %}<span class="badge" style="background:rgba(255,194,77,.12);color:#ffc24d;border-color:rgba(255,194,77,.24)">模板模式</span>{% endif %}
+    <h2>{{ t('section.monologues') }}</h2>
+    {% if not llm %}<span class="badge" style="background:rgba(255,194,77,.12);color:#ffc24d;border-color:rgba(255,194,77,.24)">{{ t('badge.template') }}</span>{% endif %}
     <div class="line"></div>
   </div>
   <div class="monos">
@@ -209,10 +191,10 @@ body{
   {% endif %}
 
   <div class="foot">
-    <a href="/graveyard">🪦 墓园（{{ dead_count }}）</a>
-    <a href="/api/state">API</a>
-    <a href="/healthz">状态</a>
-    <span style="margin-left:auto">VPS Hospice · 数据公开 · MIT</span>
+    <a href="/graveyard">{{ t('nav.graveyard') }} ({{ dead_count }})</a>
+    <a href="/api/state">{{ t('nav.api') }}</a>
+    <a href="/healthz">status</a>
+    <span style="margin-left:auto">{{ t('app.name') }} · MIT</span>
   </div>
 
 </div>

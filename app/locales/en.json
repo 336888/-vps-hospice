@@ -1,0 +1,79 @@
+{
+  "app.name": "VPS Hospice",
+  "app.tagline": "Every VPS has a remainder",
+  "app.desc": "We track its decay, predict its death, and write down what it wants to say.",
+
+  "nav.arena": "Arena",
+  "nav.graveyard": "Graveyard",
+  "nav.api": "API",
+  "nav.back": "Back to arena",
+
+  "stat.alive": "Alive",
+  "stat.dead": "Departed",
+  "stat.samples": "Samples",
+  "stat.avg_days": "Avg. days left",
+
+  "unit.days": "days",
+  "unit.day": "day",
+
+  "section.arena": "Arena",
+  "section.monologues": "What they said today",
+  "section.diagnosis": "Diagnosis",
+  "section.decay": "Decay breakdown",
+  "section.history": "Past words",
+
+  "label.health": "Health",
+  "label.oversell": "Oversell",
+  "label.mining": "Neighbor mining",
+  "label.uptime": "Running for",
+  "label.price": "yr",
+  "label.plan": "Plan",
+  "label.location": "Location",
+  "label.born": "Born",
+  "label.confidence": "Confidence",
+  "label.samples": "samples",
+
+  "status.alive": "Alive",
+  "status.dead": "Departed",
+  "status.remaining": "Estimated time left",
+  "status.departed": "MACHINE HAS DEPARTED",
+
+  "level.normal": "Normal",
+  "level.high": "Elevated",
+  "level.severe": "Severe",
+  "level.good": "Good",
+  "level.full": "out of 100",
+
+  "conf.high": "high",
+  "conf.medium": "medium",
+  "conf.low": "low",
+  "conf.none": "none",
+  "conf.none_data": "no data",
+
+  "metric.cpu": "CPU single",
+  "metric.disk": "Disk read",
+  "metric.iops": "4K IOPS",
+  "metric.monthly_decay": "Monthly decay",
+
+  "empty.no_nodes": "No machines yet",
+  "empty.hint": "Run this to generate demo data",
+  "empty.graveyard": "The graveyard is empty",
+  "empty.graveyard_sub": "Nothing has left yet. That is a good thing.",
+  "empty.no_epitaph": "It left nothing behind",
+
+  "graveyard.title": "Graveyard",
+  "graveyard.sub": "Machines that are gone. They were running something too.",
+  "graveyard.lived": "Lived",
+  "graveyard.probes": "Probes",
+
+  "footer.data": "Data collected by automated probes",
+  "footer.method": "Survival analysis via exponential decay fit + Weibull distribution",
+  "footer.rights": "Every machine deserves an epitaph",
+
+  "badge.template": "template mode",
+
+  "days_left": "{n} days",
+  "death_on": "Expected to go {date}",
+  "based_on": "Based on {n} samples",
+  "decay_pct": "{rate}%/mo · total {total}%"
+}

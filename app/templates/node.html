@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="{{ lang }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>#{{ n.id }} {{ n.provider }} {{ n.location }} — VPS Hospice</title>
+<title>#{{ n.id }} {{ n.provider }} — {{ t('app.name') }}</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0a0e1a;--card:#121828;--line:#1e2739;--txt:#e6edf7;--dim:#6b7a99;--dim2:#4a5568;
@@ -12,6 +12,15 @@ body{background:var(--bg);color:var(--txt);
   font:14px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;
   padding:32px 20px 80px;-webkit-font-smoothing:antialiased}
 .wrap{max-width:900px;margin:0 auto}
+
+.lang{position:fixed;top:16px;right:20px;display:flex;
+  background:rgba(18,24,40,.9);border:1px solid var(--line);border-radius:9px;
+  overflow:hidden;backdrop-filter:blur(10px);z-index:100}
+.lang a{padding:6px 13px;font-size:11.5px;font-weight:700;color:var(--dim);
+  text-decoration:none;letter-spacing:.4px;transition:.15s}
+.lang a:hover{color:#8fa6c8;background:rgba(43,127,245,.08)}
+.lang a.on{background:rgba(43,127,245,.16);color:#6aa9ff}
+
 a.back{display:inline-flex;align-items:center;gap:6px;color:var(--dim);text-decoration:none;
   font-size:12.5px;margin-bottom:20px}
 a.back:hover{color:#6aa9ff}
@@ -27,16 +36,11 @@ a.back:hover{color:#6aa9ff}
 .tag.o{background:rgba(255,138,0,.13);color:var(--o)}
 .tag.r{background:rgba(255,71,87,.13);color:var(--r)}
 
-/* 倒计时 */
-.hero{
-  background:linear-gradient(150deg,#121828 0%,#0d1220 100%);
+.hero{background:linear-gradient(150deg,#121828 0%,#0d1220 100%);
   border:1px solid var(--line);border-radius:20px;padding:36px 24px;text-align:center;
-  margin-bottom:18px;position:relative;overflow:hidden;
-}
-.hero::before{
-  content:"";position:absolute;inset:-50%;pointer-events:none;
-  background:radial-gradient(circle at 50% 0%,rgba(43,127,245,.13),transparent 55%);
-}
+  margin-bottom:18px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:-50%;pointer-events:none;
+  background:radial-gradient(circle at 50% 0%,rgba(43,127,245,.13),transparent 55%)}
 .hero .lbl{font-size:11.5px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;
   font-weight:700;margin-bottom:14px;position:relative}
 .hero .num{font-size:76px;font-weight:900;line-height:1;letter-spacing:-3px;
@@ -50,14 +54,12 @@ a.back:hover{color:#6aa9ff}
 .hero .date{font-size:13px;color:var(--dim);margin-top:12px;position:relative}
 .hero .date em{font-style:normal;color:#8fa6c8;font-weight:700}
 
-/* 卡片 */
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;
   padding:20px 22px;margin-bottom:14px}
 .card h3{font-size:12px;font-weight:800;color:#b8c6db;letter-spacing:.8px;
   text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px}
 .card h3 .dot{width:5px;height:5px;border-radius:50%;background:var(--b)}
 
-/* 指标 */
 .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:12px}
 .m{background:#0f1421;border:1px solid #1a2233;border-radius:11px;padding:13px 14px}
 .m .k{font-size:10.5px;color:var(--dim);letter-spacing:.8px;text-transform:uppercase;
@@ -68,68 +70,73 @@ a.back:hover{color:#6aa9ff}
 .m.bad .v{color:var(--r)}
 .m.good .v{color:var(--g)}
 
-/* 警告 */
 .alerts{margin-bottom:14px}
 .alert{background:rgba(255,138,0,.08);border:1px solid rgba(255,138,0,.22);
   border-radius:10px;padding:11px 14px;font-size:12.5px;color:#ffb066;margin-bottom:8px}
-.alert::before{content:"⚠️  ";font-size:11px}
 
-/* 独白 */
-.mono{
-  background:linear-gradient(150deg,#141b2e,#0e1320);
-  border:1px solid #232f47;border-radius:16px;padding:24px 26px;margin-bottom:14px;
-  position:relative;
-}
-.mono::before{content:"💭";position:absolute;top:16px;right:20px;font-size:16px;opacity:.4}
-.mono .txt{font-size:15px;line-height:1.95;color:#d0dcec;font-weight:400}
+.mono{background:linear-gradient(150deg,#141b2e,#0e1320);
+  border:1px solid #232f47;border-radius:16px;padding:24px 26px;margin-bottom:14px;position:relative}
+.mono::before{content:"";position:absolute;top:20px;right:22px;width:18px;height:18px;
+  border-radius:50%;background:rgba(106,169,255,.1);box-shadow:0 0 0 5px rgba(106,169,255,.04)}
+.mono .txt{font-size:15px;line-height:1.95;color:#d0dcec}
 .mono .ts{font-size:11px;color:var(--dim2);margin-top:14px;text-align:right}
 
-/* 历史独白 */
 .hist{list-style:none}
 .hist li{padding:11px 0;border-bottom:1px solid #1a2233;display:flex;gap:14px}
 .hist li:last-child{border:none;padding-bottom:0}
-.hist .d{font-size:11px;color:var(--dim2);flex:0 0 52px;font-variant-numeric:tabular-nums}
+.hist .d{font-size:11px;color:var(--dim2);flex:0 0 40px;font-variant-numeric:tabular-nums}
 .hist .t{font-size:12.5px;color:#9fb0c8;line-height:1.7;flex:1}
 
-/* 曲线 */
-.chart-wrap{position:relative;height:200px;margin-top:8px}
-
 .foot{margin-top:44px;font-size:12px;color:var(--dim2)}
+.foot a{color:var(--dim);text-decoration:none}
+.foot a:hover{color:#6aa9ff}
+
 @media(max-width:640px){
   body{padding:20px 14px 60px}
   .hero .num{font-size:56px}
   .head h1{font-size:19px}
-  .card{padding:16px 16px}
+  .card{padding:16px}
+  .lang{top:10px;right:10px}
 }
 </style>
 </head>
 <body>
+
+<div class="lang">
+  <a href="/lang/zh" class="{{ 'on' if lang=='zh' else '' }}">中文</a>
+  <a href="/lang/en" class="{{ 'on' if lang=='en' else '' }}">EN</a>
+</div>
+
 <div class="wrap">
 
-  <a class="back" href="/">← 返回竞技场</a>
+  <a class="back" href="/">← {{ t('nav.back') }}</a>
 
   <div class="head">
     <span class="id">#{{ n.id }}</span>
     <h1>{{ n.provider }}</h1>
-    <span class="loc">{{ n.location }} · {{ n.plan or '—' }}</span>
+    <span class="loc">{{ n.location }} · {{ n.plan or '-' }}</span>
     {% if n.died_at %}
-    <span class="tag r">💀 已离开</span>
+    <span class="tag r">{{ t('status.dead') }}</span>
     {% else %}
-    <span class="tag {{ cls }}">{{ ico }} {{ '%.0f'|format(pred.health) }}/100</span>
+    <span class="tag {{ cls }}">{{ '%.0f'|format(pred.health) }}/100</span>
     {% endif %}
   </div>
 
   {% if n.died_at %}
   <div class="hero r">
-    <div class="lbl">MACHINE HAS DEPARTED</div>
+    <div class="lbl">{{ t('status.departed') }}</div>
     <div class="num">R.I.P.</div>
-    <div class="date">{{ born }} — 已离开</div>
+    <div class="date">{{ born }}</div>
   </div>
   {% else %}
   <div class="hero {{ cls }}">
-    <div class="lbl">预计剩余寿命</div>
-    <div class="num">{{ pred.days_left }}<span class="unit">天</span></div>
-    <div class="date">预计 <em>{{ pred.death_date }}</em> 离开 · 基于 {{ pred.samples }} 次采样 · 置信度 <em>{{ pred.confidence }}</em></div>
+    <div class="lbl">{{ t('status.remaining') }}</div>
+    <div class="num">{{ pred.days_left }}<span class="unit">{{ t('unit.days') }}</span></div>
+    <div class="date">
+      {{ t('death_on', date=pred.death_date) }} ·
+      {{ t('based_on', n=pred.samples) }} ·
+      {{ t('label.confidence') }} <em>{{ t('conf.' + pred.confidence) }}</em>
+    </div>
   </div>
   {% endif %}
 
@@ -140,45 +147,42 @@ a.back:hover{color:#6aa9ff}
   {% endif %}
 
   <div class="card">
-    <h3><span class="dot"></span>诊断</h3>
+    <h3><span class="dot"></span>{{ t('section.diagnosis') }}</h3>
     <div class="metrics">
       <div class="m">
-        <div class="k">健康度</div>
+        <div class="k">{{ t('label.health') }}</div>
         <div class="v {{ 'good' if pred.health >= 70 else ('warn' if pred.health >= 40 else 'bad') }}">
           {{ '%.0f'|format(pred.health) }}
         </div>
-        <div class="d">满分 100</div>
+        <div class="d">{{ t('level.full') }}</div>
       </div>
       <div class="m {{ 'bad' if pred.oversell > 0.6 else ('warn' if pred.oversell > 0.35 else '') }}">
-        <div class="k">超售指数</div>
+        <div class="k">{{ t('label.oversell') }}</div>
         <div class="v">{{ '%.2f'|format(pred.oversell) }}</div>
-        <div class="d">{{ '严重' if pred.oversell > 0.6 else ('偏高' if pred.oversell > 0.35 else '正常') }}</div>
+        <div class="d">{{ t('level.severe') if pred.oversell > 0.6 else (t('level.high') if pred.oversell > 0.35 else t('level.normal')) }}</div>
       </div>
       <div class="m {{ 'warn' if pred.mining_risk > 0.5 else '' }}">
-        <div class="k">邻居挖矿</div>
+        <div class="k">{{ t('label.mining') }}</div>
         <div class="v">{{ '%.0f'|format(pred.mining_risk * 100) }}<span style="font-size:12px;color:#5a6b8a">%</span></div>
-        <div class="d">推测概率</div>
+        <div class="d">-</div>
       </div>
       <div class="m">
-        <div class="k">已运行</div>
+        <div class="k">{{ t('label.uptime') }}</div>
         <div class="v">{{ alive_days }}</div>
-        <div class="d">天 · 开通于 {{ born }}</div>
+        <div class="d">{{ t('unit.days') }} · {{ t('label.born') }} {{ born }}</div>
       </div>
     </div>
   </div>
 
   {% if pred.decay %}
   <div class="card">
-    <h3><span class="dot"></span>衰减明细</h3>
+    <h3><span class="dot"></span>{{ t('section.decay') }}</h3>
     <div class="metrics">
       {% for d in pred.decay %}
       <div class="m">
-        <div class="k">{{ {'cpu':'CPU 单核','disk':'磁盘读取','iops':'4K IOPS'}.get(d.key, d.key) }}</div>
+        <div class="k">{{ t('metric.' + d.key) }}</div>
         <div class="v">{{ d.current }}</div>
-        <div class="d">
-          月衰减 {% if d.rate_per_month_pct < 0 %}{{ '%.2f'|format(d.rate_per_month_pct) }}{% else %}-{{ '%.2f'|format(d.rate_per_month_pct) }}{% endif %}%
-          · 累计 {{ d.decay_pct }}%
-        </div>
+        <div class="d">{{ t('decay_pct', rate=-d.rate_per_month_pct, total=d.decay_pct) }}</div>
       </div>
       {% endfor %}
     </div>
@@ -188,13 +192,12 @@ a.back:hover{color:#6aa9ff}
   {% if mono %}
   <div class="mono">
     <div class="txt">{{ mono.text }}</div>
-    <div class="ts">{{ mono.ts | int }}</div>
   </div>
   {% endif %}
 
   {% if history and history|length > 1 %}
   <div class="card">
-    <h3><span class="dot"></span>它说过的</h3>
+    <h3><span class="dot"></span>{{ t('section.history') }}</h3>
     <ul class="hist">
       {% for h in history[1:] %}
       <li>
@@ -207,8 +210,8 @@ a.back:hover{color:#6aa9ff}
   {% endif %}
 
   <div class="foot">
-    数据来自自动探测 · 生存分析基于指数衰减拟合 + 威布尔分布 ·
-    <a href="/api/node/{{ n.id }}" style="color:#5a6b8a">JSON</a>
+    {{ t('footer.data') }} · {{ t('footer.method') }} ·
+    <a href="/api/node/{{ n.id }}">JSON</a>
   </div>
 
 </div>
